@@ -3,21 +3,34 @@ package kr.flyegg.egg.ui;
 import java.io.IOException;
 import java.util.List;
 
+import kr.flyegg.egg.R;
+import kr.flyegg.egg.mirror.AudioRecorder;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class MirrorMain extends Activity {
+	private static final String TAG = "MirrorMain";
+	
+	// ------------------------------------------
+	// 카메라 관련
 
     private Preview mPreview;
     Camera mCamera;
@@ -26,19 +39,40 @@ public class MirrorMain extends Activity {
 
     // The first rear facing camera
     int defaultCameraId;
+
+	// ------------------------------------------
+    // 녹음기 관련
+//	private String mVoicePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+	// /sdcard/mnt/sdcard.3gp 에 저장되었음
+    
+    private String mVoicePath = "/voice.3gp";
+	private AudioRecorder mAudioRecorder = new AudioRecorder(mVoicePath);
+	
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		// ------------------------------------------
+		// 화면 기본 세팅
+		// ------------------------------------------
+		// 화면 회전 방지 - LANDSCAPE 로 고정
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // PORTRAIT
+
 		// Hide the window title.
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
+		
+		// ------------------------------------------
+		// 카메라 세팅
+		// ------------------------------------------
 
 		// Create a RelativeLayout container that will hold a SurfaceView,
 		// and set it as the content of our activity.
 		mPreview = new Preview(this);
-		setContentView(mPreview);
 
 		// Find the total number of cameras available
 		numberOfCameras = Camera.getNumberOfCameras();
@@ -52,27 +86,67 @@ public class MirrorMain extends Activity {
 				defaultCameraId = i;
 			}
 		}
-		/*
-		setContentView(R.layout.activity_mirror_main);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		*/
 		
 		
-	    // 클릭 이벤트
-		/*
+		// ------------------------------------------
+		// Display
+		// ------------------------------------------
+		setContentView(mPreview);	// 카메라를 먼저 띄움
+
+		LayoutInflater inflater = getLayoutInflater();
+//		R.layout.activity_li
+		View layout = inflater.inflate(R.layout.activity_mirror_main, null);
+		addContentView(layout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		
+		
+		// 클릭 이벤트
 		OnClickListener levelClickListener = new OnClickListener() {
 
 			public void onClick(View v) {
-				
-				
+				if (v.getId() == R.id.btnVoiceRecordStart) {
+					Toast.makeText(getApplicationContext(), "Record Start:" + mVoicePath, Toast.LENGTH_SHORT).show();
+					Log.d(TAG, "Record Start:" + mVoicePath);
+
+					try {
+						mAudioRecorder.start();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (v.getId() == R.id.btnVoiceRecordStop) {
+					Toast.makeText(getApplicationContext(), "Record Stop", Toast.LENGTH_SHORT).show();
+					Log.d(TAG, "Record Stop");
+					try {
+						mAudioRecorder.stop();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (v.getId() == R.id.btnVoicePlay) {
+					
+					
+					MediaPlayer mediaPlayer;
+                    mediaPlayer = new MediaPlayer();
+                    try {
+						mediaPlayer.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath() + mVoicePath);
+	                    mediaPlayer.prepare();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						Log.e(TAG, "error: " + e.getMessage(), e);
+					}
+                    mediaPlayer.start();
+                    
+                    Log.d(TAG, "Play:" + mVoicePath);
+					Toast.makeText(getApplicationContext(), "Play:" + mVoicePath, Toast.LENGTH_SHORT).show();
+				}
 			}
 		};
-		*/
 		
 		// 클릭 이벤트 연결
-//		findViewById(R.id.btnGameEasy).setOnClickListener(levelClickListener);
-		
-		
+		findViewById(R.id.btnVoiceRecordStart).setOnClickListener(levelClickListener);
+		findViewById(R.id.btnVoiceRecordStop).setOnClickListener(levelClickListener);
+		findViewById(R.id.btnVoicePlay).setOnClickListener(levelClickListener);
 	}
 	
 	@Override
@@ -101,8 +175,8 @@ public class MirrorMain extends Activity {
 	protected void onDestroy() {
 
 		super.onDestroy();
+		
 	}
-
 }
 
 
@@ -122,7 +196,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 	Size mPreviewSize;
 	List<Size> mSupportedPreviewSizes;
 	Camera mCamera;
-
+	
 	Preview(Context context) {
 		super(context);
 
@@ -133,6 +207,8 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 		// underlying surface is created and destroyed.
 		mHolder = mSurfaceView.getHolder();
 		mHolder.addCallback(this);
+		
+		// deprecated setting, but required on Android versions prior to 3.0
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
 
