@@ -85,8 +85,8 @@ public class FlyEggProvider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+		
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		int count = 0;
 		
