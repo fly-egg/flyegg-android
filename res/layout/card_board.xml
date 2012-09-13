@@ -32,26 +32,30 @@
 	            android:layout_width="match_parent"
 	            android:layout_height="match_parent"
 	            android:padding="5dp" >
-	
-	            <Gallery
-	                android:id="@+id/gallery"
+				
+	            <LinearLayout
 	                android:layout_width="match_parent"
-	                android:layout_height="wrap_content"
-	                android:spacing="20dp" />
-	
-	            <ScrollView
-	                android:id="@+id/scroll_img_view"
-	                android:layout_width="match_parent"
-	                android:layout_height="fill_parent" >
-	
-	                <GridView
-	                    android:id="@+id/gridview"
-	                    android:layout_width="fill_parent"
-	                    android:layout_height="fill_parent"
-	                    android:numColumns="3" >
-	                </GridView>
-	            </ScrollView>
-	
+	            	android:layout_height="match_parent" >
+	                <Gallery
+		                android:id="@+id/gallery"
+		                android:layout_width="fill_parent"
+		                android:layout_height="wrap_content"
+		                android:spacing="20dp" />
+	                
+	                <ScrollView
+		                android:id="@+id/scroll_img_view"
+		                android:layout_width="match_parent"
+		                android:layout_height="fill_parent" >
+		                
+		                <GridView
+		                    android:id="@+id/gridview"
+		                    android:layout_width="match_parent"
+		                    android:layout_height="match_parent"
+		                    android:numColumns="3" >
+		                </GridView>
+		                
+	            	</ScrollView>
+	            </LinearLayout>
 	        </FrameLayout>
 	        
 	      </LinearLayout>
