@@ -10,6 +10,7 @@ import android.nfc.TagLostException;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -44,12 +45,28 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 		TabHost.TabSpec spec = null;
 	
 		
-		 for (int i=1; i <= 30; i++) {
-            String name = "Tab " + i;
-            tabHost.addTab(tabHost.newTabSpec(name)
-                    .setIndicator(name)
-                    .setContent(this));
-        }
+		tabHost.addTab(tabHost.newTabSpec(getString(R.string.all_tab))
+                .setIndicator(getString(R.string.all_tab))
+                .setContent(this));
+		
+		
+		
+		//ì—¬ê¸°ì„œë¶€í„° ë™ì ìœ¼ë¡œ ë™ìž‘í•˜ê¸°
+		setCategory(tabHost);
+		
+		
+		tabHost.addTab(tabHost.newTabSpec(getString(R.string.plus))
+                .setIndicator(getString(R.string.plus))
+                .setContent(this));
+		
+		
+		
+//		 for (int i=1; i <= 30; i++) {
+//            String name = "Tab " + i;
+//            tabHost.addTab(tabHost.newTabSpec(name)
+//                    .setIndicator(name)
+//                    .setContent(this));
+//        }
 		
 //		spec = tabHost.newTabSpec("test");
 //		tabHost.addTab( spec );
@@ -60,7 +77,14 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 //		
 		tabHost.setCurrentTab( 0 );
 		
+		//size ì •í•˜ê¸°
+		for(int tab=0; tab < tabHost.getTabWidget().getChildCount(); tab++) {
+			tabHost.getTabWidget().getChildAt(tab).getLayoutParams().width = 150;
+		}
+		
+		
 		///////////////////////////////////////////////////////////////////////////////////
+		//sticker
 		Gallery g = (Gallery) findViewById(R.id.gallery);
         // Set the adapter to our custom adapter (below)
         g.setAdapter(new ImageAdapter(this));
@@ -74,7 +98,14 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 		
 	}
 
-    public View createTabContent(String tag) {
+    private void setCategory(TabHost tabHost2) {
+    	
+    	//dbì—ì„œ listë¥¼ ê°€ì ¸ì˜¨ë‹¤.
+    	
+		
+	}
+
+	public View createTabContent(String tag) {
 //    	GridView imagegrid = (GridView) findViewById(R.id.gridview);
 //		imageAdapter = new ImageAdapter(this);
 //		imagegrid.setAdapter(imageAdapter);
@@ -97,7 +128,7 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
         private final int mGalleryItemBackground;
         private final Context mContext;
 
-        //Æ¯Á¤ÆÄÀÏ ºÒ·¯ ¿Ã ¼ö ÀÖ°Ô ¼öÁ¤ÇÏ±â.. 
+        //Æ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½.. 
         private final Integer[] mImageIds = {
                 R.drawable.gallery_photo_1,
                 R.drawable.gallery_photo_2,
