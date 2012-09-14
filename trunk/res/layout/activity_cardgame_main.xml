@@ -1,25 +1,80 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/btnGameEasy"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="100dip"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="나는야 암기王"
+            android:textSize="35sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1단계" />
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/btnGameNormal"
+        <Button
+            android:id="@+id/btnGameEasy"
+            android:layout_width="300dip"
+            android:layout_height="80dip"
+            android:text="1단계"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btnGameNormal"
+            android:layout_width="300dip"
+            android:layout_height="80dip"
+            android:text="2단계"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btnGameHard"
+            android:layout_width="300dip"
+            android:layout_height="80dip"
+            android:text="3단계"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2단계" />
+        android:layout_height="100dip"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/btnGameHard"
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="과일야채 > 의성어 SET 선택 中 [변경]"
+            android:textSize="35sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="3단계" />
+        android:layout_height="100dip"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
 
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="변경을 누르면 SET 변경화면으로 이동합니다."
+            android:textSize="35sp" />
+    </LinearLayout>
 
 </LinearLayout>
