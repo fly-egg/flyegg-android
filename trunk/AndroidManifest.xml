@@ -34,8 +34,7 @@
         <!--
         //타이틀 없음. 
         android:theme="@android:style/Theme.NoTitleBar"
-        //투명 activity  
-        android:theme="@android:style/Theme.Translucent" -->
+         -->
         
         <activity
             android:name=".ui.WordCardMain"
@@ -56,6 +55,11 @@
             android:name=".ui.CardBoard"
             android:screenOrientation="landscape" />
 
+		<activity
+            android:name=".ui.tabview.PlusActivity"
+            android:theme="@android:style/Theme.Translucent"
+            android:screenOrientation="landscape" />
+        
     </application>
 
 </manifest>
