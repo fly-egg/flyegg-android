@@ -6,7 +6,7 @@ public class Card {
 
 	String word = null;
 	String imgPath = null;
-	String[] category = null;
+	String category = null;
 	String[] tags = null;
 
 	// 일단 이렇게 해놈. jpeg 가능하면 바꿔도 무방함.
@@ -21,7 +21,7 @@ public class Card {
 	public Card() {
 	}
 
-	public Card(String word, String imgPath, String[] category, String[] tags, Bitmap thumbnail) {
+	public Card(String word, String imgPath, String category, String[] tags, Bitmap thumbnail) {
 		this.word = word;
 		this.imgPath = imgPath;
 		this.category = category;
@@ -45,11 +45,11 @@ public class Card {
 		this.imgPath = imgPath;
 	}
 
-	public String[] getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(String[] category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 
