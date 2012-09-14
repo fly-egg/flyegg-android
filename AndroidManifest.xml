@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme" >
         
         
-        <provider android:name=".domain.db.FlyEggProvider" android:authorities="kr.flyegg.egg.FlyEggProvider"/>
+        <provider android:name=".dao.db.FlyEggProvider" android:authorities="kr.flyegg.egg.FlyEggProvider"/>
         
         <activity
             android:name=".MainActivity"
@@ -30,6 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!--
+        //타이틀 없음. 
+        android:theme="@android:style/Theme.NoTitleBar"
+        //투명 activity  
+        android:theme="@android:style/Theme.Translucent" -->
         
         <activity
             android:name=".ui.WordCardMain"
