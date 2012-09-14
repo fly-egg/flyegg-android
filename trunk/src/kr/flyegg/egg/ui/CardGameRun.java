@@ -1,9 +1,12 @@
 package kr.flyegg.egg.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 import kr.flyegg.egg.R;
 import kr.flyegg.egg.cardgame.GameCard;
+import kr.flyegg.egg.dao.Card;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,13 +31,25 @@ public class CardGameRun extends Activity {
 
 	private static final String TAG = "CardGameRun";
 
+	// ------------------------
+	// 판수 변수들
 	private static int stageNow = 1; // 현재 판수
 	private final int stageTotal = 3; // 전체 판수
 
+	// ------------------------
+	// 게임카드 변수들
 	private int pairs = 0; // 카드 짝수 (2짝이면 4장, 3짝이면 6장, 4짝이면 8장이 된다.)
+	private ArrayList<GameCard> mGameCards = new ArrayList<GameCard>(); // 게임용 카드 리스트
 
-	private ArrayList<GameCard> gameCards = new ArrayList<GameCard>(); // 게임용 카드 리스트
+	// ------------------------
+	// DB의 카드 정보 가져오기 위한 변수들
+	private int mLevel;	// 인자로 받은 레벨
+	private String mCategory;	// 인자로 받은 카테고리
+	private String mTag;	// 인자로 받은 테그
 
+	private ArrayList<Card> mCardsListFromDB;	// DB에서 조회해온 카드리스트
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,25 +63,37 @@ public class CardGameRun extends Activity {
 		// 게임 횟수 초기화
 		stageNow = 1;
 
+		Intent intent = getIntent();
+		// ------------------------
+		// 카테고리, 테그 정보 받아 오기
+		mCategory = intent.getStringExtra(CardGameMain.EXTRA_LEVEL);
+		mTag = intent.getStringExtra(CardGameMain.EXTRA_TAG);
+		
 		// ------------------------
 		// 레벨정보 받아오기
-		Intent intent = getIntent();
-		int level = intent.getIntExtra("LEVEL", 0);
+		mLevel = intent.getIntExtra(CardGameMain.EXTRA_LEVEL, 0);
 
-		Log.d(TAG, "Level:" + level);
+		Log.d(TAG, "Level:" + mLevel);
 
-		if (level == 1) {
+		if (mLevel == 1) {
 			pairs = 2;
-		} else if (level == 2) {
+		} else if (mLevel == 2) {
 			pairs = 3;
-		} else if (level == 3) {
+		} else if (mLevel == 3) {
 			pairs = 4;
 		}
-
+		
 		// ------------------------
-		// 타이틀 변경하기
-		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
-		tvTitle.setText("메모리 게임 " + level + "단계 " + stageNow + "/" + stageTotal);
+		// TODO: DB에서 카드 정보 가져 오기 (parameter: 카테고리, SET)
+		// 일단 임시로 맘대로 구현
+		mCardsListFromDB = getCardListDB(mCategory, mTag);
+		Log.d(TAG, "db size=" + mCardsListFromDB.size());
+
+		// 해당 카테고리/테그의 카드수가 카드게임의 짝(pair) 보다 적으면 게임을 할 수 없음
+		if (mCardsListFromDB.size() < pairs) {
+			Toast.makeText(getApplicationContext(), "카드가 부족해서 게임을 진행 할 수 없습니다 ㅠㅜ", Toast.LENGTH_SHORT).show();			
+			finish();
+		}
 
 		// ------------------------
 		// 레벨에 맞는 테이블 그리기
@@ -80,6 +107,51 @@ public class CardGameRun extends Activity {
 
 		super.onDestroy();
 	}
+	
+	/**
+	 * DB에서 카드 리스트 가져 오기
+	 * TODO: 임시로 사용함. 실제 DB 쪽 가져 오는거 나오면 그거 쓰면 됨.
+	 * @param category
+	 * @param tag
+	 * @return
+	 */
+	private ArrayList<Card> getCardListDB(String category, String tag) {
+		ArrayList<Card> cardsListFromDB = new ArrayList<Card>();
+		
+		int num = 8;
+        final Integer[] imageIds = {
+                R.drawable.gallery_photo_1,
+                R.drawable.gallery_photo_2,
+                R.drawable.gallery_photo_3,
+                R.drawable.gallery_photo_4,
+                R.drawable.gallery_photo_5,
+                R.drawable.gallery_photo_6,
+                R.drawable.gallery_photo_7,
+                R.drawable.gallery_photo_8
+        };
+        
+        final String[] words = {
+        		"토끼", "거북이", "고양이", "말", "호랑이", "사자", "곰", "강아지"
+        };
+        
+        final String[] tags = {
+        	"철수"	
+        };
+        
+        for (int i=0; i<num; i++) {
+        	Card card = new Card();
+        	
+        	card.setWord(words[i]);
+        	card.setImgPath("" + imageIds[i]);
+        	card.setCategory(category);
+        	card.setTags(tags);
+//        	card.setThumbnail(thumbnail);	// 썸네일은 생략
+        	
+        	cardsListFromDB.add(card);
+        }
+		
+		return cardsListFromDB;
+	}
 
 	/**
 	 * 선택된 카드 갯수
@@ -88,8 +160,8 @@ public class CardGameRun extends Activity {
 	 */
 	private int getCheckedCardNum() {
 		int count = 0;
-		for (int i = 0; i < gameCards.size(); i++) {
-			if (gameCards.get(i).isChecked()) {
+		for (int i = 0; i < mGameCards.size(); i++) {
+			if (mGameCards.get(i).isChecked()) {
 				count++;
 			}
 		}
@@ -102,8 +174,8 @@ public class CardGameRun extends Activity {
 	 * @return
 	 */
 	private boolean isAllSolved() {
-		for (int i = 0; i < gameCards.size(); i++) {
-			if (gameCards.get(i).isSolved() == false) {
+		for (int i = 0; i < mGameCards.size(); i++) {
+			if (mGameCards.get(i).isSolved() == false) {
 				return false;
 			}
 		}
@@ -117,6 +189,12 @@ public class CardGameRun extends Activity {
 	 * @param pair
 	 */
 	public void drawGameTable(int pair) {
+		
+		// ------------------------
+		// 타이틀 변경하기
+		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
+		tvTitle.setText("메모리 게임 " + mLevel + "단계 " + stageNow + "/" + stageTotal);
+
 		Log.d(TAG, "DrawTable start");
 
 		int row = 2;
@@ -136,21 +214,11 @@ public class CardGameRun extends Activity {
 		}
 
 		Log.d(TAG, "Make Card");
-
+		
+		
 		// ------------------------
 		// card list 생성
 		// TODO: 카드 이미지의 아이디? 파일명?
-
-		/*
-		ArrayList<Card> cardsListTemp = new ArrayList<Card>();
-		Card card = new Card();
-//		card.setCategory(category);
-		card.setImgPath(imgPath);
-		//		card.setTags(tags);
-//		card.setThumbnail(thumbnail);
-		card.setWord("토끼");
-//		cardsListTemp.add(object)
-		*/
 		
 		ArrayList<Integer> cardsList = new ArrayList<Integer>();
 		for (int i = 0; i < pair; i++) {
@@ -181,7 +249,11 @@ public class CardGameRun extends Activity {
 
 		// clear table view and cards
 		tableLayout.removeAllViews();
-		gameCards.clear();
+		mGameCards.clear();
+		
+		// DB Card ArrayList Random Shuffle
+		long seed = System.nanoTime();
+		Collections.shuffle(mCardsListFromDB, new Random(seed));
 
 		Integer cardNo = new Integer(0);
 		Log.d(TAG, "cardNo:" + cardNo);
@@ -210,10 +282,15 @@ public class CardGameRun extends Activity {
 
 				// 카드 정보를 태그에 기록
 				// btn.setTag(gameCard);
-				btn.setTag(cardNo++);
+				Log.d(TAG, "setTag cardNo=" + cardNo);
+				btn.setTag(cardNo);
+
+				// DB에서 조회해온 카드를 앞에서 부터 순서대로 넣음
+				gameCard.setCard(mCardsListFromDB.get(gameCard.getCardNo()));
+				cardNo++;
 
 				gameCard.setView(btn);
-				gameCards.add(gameCard);
+				mGameCards.add(gameCard);
 
 				// 사이즈
 				Log.d(TAG, "Set Card Size");
@@ -244,7 +321,7 @@ public class CardGameRun extends Activity {
 
 			Log.d(TAG, "CardNo:" + cardNo);
 			// Toast.makeText(getApplicationContext(), "CardNo:" + cardNo, Toast.LENGTH_SHORT).show();
-			GameCard gameCard = gameCards.get(cardNo);
+			GameCard gameCard = mGameCards.get(cardNo);
 
 			// 풀었는 카드 선택시 아무것도 하지 않음
 			if (gameCard.isSolved()) {
@@ -254,14 +331,14 @@ public class CardGameRun extends Activity {
 			// 이미 선택된 카드가 2개 있는 경우 선택된 카드들은 다시 뒤집음
 			if (getCheckedCardNum() == 2) {
 
-				for (int i = 0; i < gameCards.size(); i++) {
-					if (gameCards.get(i).isChecked()) {
+				for (int i = 0; i < mGameCards.size(); i++) {
+					if (mGameCards.get(i).isChecked()) {
 						// 선택된 카드 다시 뒤집기
-						gameCards.get(i).setSide(GameCard.SIDE_BACK);
-						gameCards.get(i).getView().setBackgroundResource(R.drawable.ic_launcher);
-						((Button) gameCards.get(i).getView()).setText("");
+						mGameCards.get(i).setSide(GameCard.SIDE_BACK);
+						mGameCards.get(i).getView().setBackgroundResource(R.drawable.ic_launcher);
+//						((Button) mGameCards.get(i).getView()).setText("");
 
-						gameCards.get(i).setChecked(false);
+						mGameCards.get(i).setChecked(false);
 					}
 				}
 			}
@@ -271,9 +348,12 @@ public class CardGameRun extends Activity {
 				gameCard.setSide(GameCard.SIDE_FRONT);
 				gameCard.setChecked(true); // 선택처리
 
-				// TODO: 해당 카드 이미지가 나타나도록
-				((Button) v).setText("no:" + gameCard.getCardNo());
-				v.setBackgroundResource(0);
+//				((Button) v).setText("no:" + gameCard.getCardNo());
+				Card card = gameCard.getCard();
+				
+				// TODO: 실제 이미지인 경우에 대한 처리 필요
+				//v.setBackgroundDrawable(background) 로 해야 되나?
+				v.setBackgroundResource(Integer.parseInt(card.getImgPath()));
 			} else {
 				// 이미 선택된 카드 클릭시 아무것도 하지 않음
 				return;
@@ -283,21 +363,21 @@ public class CardGameRun extends Activity {
 			if (getCheckedCardNum() == 2) {
 				int preCheckedCardIndex = -1; // 선택된 카드 index
 
-				for (int i = 0; i < gameCards.size(); i++) {
-					if (gameCards.get(i).isChecked()) {
+				for (int i = 0; i < mGameCards.size(); i++) {
+					if (mGameCards.get(i).isChecked()) {
 						if (preCheckedCardIndex == -1) {
 							preCheckedCardIndex = i;
 							continue;
 						}
 
 						// 이전 선택 카드 번호와 지금 선택 카드 번호가 같으면 맞음
-						if (gameCards.get(preCheckedCardIndex).getCardNo() == gameCards.get(i).getCardNo()) {
-							gameCards.get(preCheckedCardIndex).setSolved(true);
-							gameCards.get(i).setSolved(true);
+						if (mGameCards.get(preCheckedCardIndex).getCardNo() == mGameCards.get(i).getCardNo()) {
+							mGameCards.get(preCheckedCardIndex).setSolved(true);
+							mGameCards.get(i).setSolved(true);
 
 							// 선택 해제
-							gameCards.get(preCheckedCardIndex).setChecked(false);
-							gameCards.get(i).setChecked(false);
+							mGameCards.get(preCheckedCardIndex).setChecked(false);
+							mGameCards.get(i).setChecked(false);
 
 							// Toast.makeText(getApplicationContext(), "짝짝짝", Toast.LENGTH_SHORT).show();
 							break;
@@ -308,7 +388,21 @@ public class CardGameRun extends Activity {
 
 			// 전부 해결
 			if (isAllSolved()) {
-				Toast.makeText(getApplicationContext(), "우왕 굳! ㅋ Clear!", Toast.LENGTH_SHORT).show();
+
+				// 스테이지를 다음으로 넘김
+				stageNow++;
+				
+				if (stageNow > stageTotal) {
+					// TODO: n단계를 모두 맞췄군요 팝업 띄우기
+					// 메인, 다시하기, 다음단계
+					Toast.makeText(getApplicationContext(), "우왕 굳! ㅋ Level Clear!", Toast.LENGTH_SHORT).show();
+					finish();
+				} else {
+					// TODO: 참 잘 했어요 띄우기... Custom Popup?
+					Toast.makeText(getApplicationContext(), "우왕 굳! ㅋ Clear!", Toast.LENGTH_SHORT).show();
+					drawGameTable(pairs);
+				}
+				
 			}
 
 		}
