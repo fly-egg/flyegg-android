@@ -1,6 +1,10 @@
 package kr.flyegg.egg;
 
-import kr.flyegg.egg.domain.db.FlyEggDBHelper;
+import java.util.List;
+
+import kr.flyegg.egg.dao.Card;
+import kr.flyegg.egg.dao.CardAccesser;
+import kr.flyegg.egg.dao.db.FlyEggDBHelper;
 import kr.flyegg.egg.ui.CardBoard;
 import kr.flyegg.egg.ui.CardGameMain;
 import kr.flyegg.egg.ui.MirrorMain;
