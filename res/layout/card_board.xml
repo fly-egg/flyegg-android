@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+<!-- 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
-
+ -->
 	<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@android:id/tabhost"
 	    android:layout_width="match_parent"
@@ -23,8 +23,18 @@
 	            android:scrollbars="none">
 	            <TabWidget
 	                android:id="@android:id/tabs"
-	                android:layout_width="match_parent"
-	                android:layout_height="wrap_content" />
+	                android:layout_width="wrap_content"
+	                android:fillViewport="true"
+	                android:layout_height="wrap_content" >
+	                <!-- 
+	                <Button
+		                android:layout_width="50dip"
+		                android:layout_height="50dip"
+		                layout_alignParentRight="true"
+		                android:layout_marginRight="10dip"
+	                    />
+	                     -->
+	            </TabWidget>
 	        </HorizontalScrollView>
 	        
 	        <FrameLayout
