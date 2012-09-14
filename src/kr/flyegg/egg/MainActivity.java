@@ -1,9 +1,9 @@
 package kr.flyegg.egg;
 
+import kr.flyegg.egg.domain.db.FlyEggDBHelper;
 import kr.flyegg.egg.ui.CardBoard;
 import kr.flyegg.egg.ui.CardGameMain;
 import kr.flyegg.egg.ui.MirrorMain;
-import kr.flyegg.egg.ui.WordCardMain;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        //화면 안꺼지게..
+        //prevent to turn off window
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
         wordCard = (Button) findViewById(R.id.workd_card);
@@ -50,9 +50,14 @@ public class MainActivity extends Activity {
 				callMirrorActivity();
 			}
 		});
-
+        createDB();
     }
     
+	private void createDB() {
+		FlyEggDBHelper helper = new FlyEggDBHelper(getApplicationContext());
+		helper.getWritableDatabase();
+		helper.close();
+	}
     
     private void callWordCardActivity() {
     	Intent i = new Intent(getApplicationContext(), CardBoard.class);

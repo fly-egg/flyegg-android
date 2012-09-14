@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme" >
         
         
-        <provider android:name=".db.FlyEggProvider" android:authorities="kr.flyegg.egg.FlyEggProvider"/>
+        <provider android:name=".domain.db.FlyEggProvider" android:authorities="kr.flyegg.egg.FlyEggProvider"/>
         
         <activity
             android:name=".MainActivity"
