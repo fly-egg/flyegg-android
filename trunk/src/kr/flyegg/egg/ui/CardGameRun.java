@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import kr.flyegg.egg.R;
 import kr.flyegg.egg.cardgame.GameCard;
-import kr.flyegg.egg.domain.Card;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
