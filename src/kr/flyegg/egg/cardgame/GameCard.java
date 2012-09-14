@@ -1,5 +1,6 @@
 package kr.flyegg.egg.cardgame;
 
+import kr.flyegg.egg.dao.Card;
 import android.view.View;
 
 public class GameCard {
@@ -11,6 +12,7 @@ public class GameCard {
 	private boolean checked;	// 선택여부
 	private String side;		// 앞/뒤
 	private int cardNo;			// 카드번호
+	private Card card;			// 카드객체
 	
 	private View view;	// 연결된 View Object
 	
@@ -42,6 +44,14 @@ public class GameCard {
 	}
 	public void setCardNo(int cardNo) {
 		this.cardNo = cardNo;
+	}
+	
+	
+	public Card getCard() {
+		return card;
+	}
+	public void setCard(Card card) {
+		this.card = card;
 	}
 	
 	public View getView() {
