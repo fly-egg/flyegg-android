@@ -8,15 +8,16 @@ public class Card {
 	String imgPath = null;
 	String[] category = null;
 	String[] tags = null;
-	//ÀÏ´Ü ÀÌ·¸°Ô ÇØ³ğ. jpec °¡´ÉÇÏ¸é ¹Ù²ãµµ ¹«¹æÇÔ.
-	//¾Èµå·ÎÀÌµå´Â ¸ğµç ÀÌ¹ÌÁö¸¦db¿¡ path¸¦ ÀúÀåÇØ ³õÀ½. ±×°Í°ú °ü·ÃµÈ api°¡ Áö¿øµÈ´Ù¸é bitmapÀÌ 
-	//Æí¸®ÇÒ ¼öµµ ÀÖÀ½.
+
+	// ì¼ë‹¨ ì´ë ‡ê²Œ í•´ë†ˆ. jpeg ê°€ëŠ¥í•˜ë©´ ë°”ê¿”ë„ ë¬´ë°©í•¨.
+	// ì•ˆë“œë¡œì´ë“œëŠ” ëª¨ë“  ì´ë¯¸ì§€ë¥¼dbì— pathë¥¼ ì €ì¥í•´ ë†“ìŒ. ê·¸ê²ƒê³¼ ê´€ë ¨ëœ apiê°€ ì§€ì›ëœë‹¤ë©´ bitmapì´
+	// í¸ë¦¬í•  ìˆ˜ë„ ìˆìŒ.
 	Bitmap thumbnail = null;
-	
-	//card manager? ´Â »ı°¢ÇØº¸°í ±¸Çö½Ã ÇÊ¿äÇÏ¸é ¸¸µé°ÙÀ½.
-	//ÆÀÀå´Ô ¸»´ë·Î ¸Å´ÏÀú¸¦ µÎ´Â°Ô Á».. ±×·¡¼­. ±Ùµ¥ ¼³°è¸¦ ±×·¸°Ô ÇØ³ö¼­ ¾ÈÇÏ±âµµ ¹½ÇÏ°í
-	//ÇÊ¿äÇÏ¸é ±× ¶§°¡¼­ ÀÌ¸§ Á¤ÇØ¼­ ÇÏ´Â°É·Î~
-	
+
+	// card manager? ëŠ” ìƒê°í•´ë³´ê³  êµ¬í˜„ì‹œ í•„ìš”í•˜ë©´ ë§Œë“¤ê²ŸìŒ.
+	// íŒ€ì¥ë‹˜ ë§ëŒ€ë¡œ ë§¤ë‹ˆì €ë¥¼ ë‘ëŠ”ê²Œ ì¢€.. ê·¸ë˜ì„œ. ê·¼ë° ì„¤ê³„ë¥¼ ê·¸ë ‡ê²Œ í•´ë†”ì„œ ì•ˆí•˜ê¸°ë„ ë­£í•˜ê³ 
+	// í•„ìš”í•˜ë©´ ê·¸ ë•Œê°€ì„œ ì´ë¦„ ì •í•´ì„œ í•˜ëŠ”ê±¸ë¡œ~
+
 	public Card() {
 	}
 
@@ -27,45 +28,54 @@ public class Card {
 		this.tags = tags;
 		this.thumbnail = thumbnail;
 	}
-	
+
 	public String getWord() {
 		return word;
 	}
+
 	public void setWord(String word) {
 		this.word = word;
 	}
+
 	public String getImgPath() {
 		return imgPath;
 	}
+
 	public void setImgPath(String imgPath) {
 		this.imgPath = imgPath;
 	}
+
 	public String[] getCategory() {
 		return category;
 	}
+
 	public void setCategory(String[] category) {
 		this.category = category;
 	}
+
 	public String[] getTags() {
 		return tags;
 	}
+
 	public void setTags(String[] tags) {
 		this.tags = tags;
 	}
+
 	public Bitmap getThumbnail() {
 		return thumbnail;
 	}
+
 	public void setThumbnail(Bitmap thumbnail) {
 		this.thumbnail = thumbnail;
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Card[word=").append(word).append(",imgPath=").append(imgPath);
 		sb.append(",category=").append(category).append(",tags=").append(tags);
 		sb.append("]");
-		
+
 		return sb.toString();
 	}
-	
+
 }
