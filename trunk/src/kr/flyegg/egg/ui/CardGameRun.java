@@ -18,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -78,6 +79,8 @@ public class CardGameRun extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		// ------------------------
 		// 카드 뒷면 이미지
 		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
@@ -224,7 +227,7 @@ public class CardGameRun extends Activity {
 		// ------------------------
 		// 타이틀 변경하기
 		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
-		tvTitle.setText("메모리 게임 " + mLevel + "단계 " + mStageNow + "/" + TOTAL_STAGE);
+		tvTitle.setText("짝꿍카드-" + mLevel + "단계");
 
 		Log.d(TAG, "DrawTable start");
 

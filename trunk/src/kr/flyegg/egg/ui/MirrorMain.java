@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
@@ -21,14 +22,13 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -121,7 +121,6 @@ public class MirrorMain extends Activity {
 		setContentView(mPreview);	// 카메라를 먼저 띄움
 
 		LayoutInflater inflater = getLayoutInflater();
-//		R.layout.activity_li
 		View layout = inflater.inflate(R.layout.activity_mirror_main, null);
 		addContentView(layout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
@@ -130,52 +129,9 @@ public class MirrorMain extends Activity {
 		OnClickListener levelClickListener = new OnClickListener() {
 
 			public void onClick(View v) {
-				/*
-				if (v.getId() == R.id.btnVoiceRecordStart) {
-					Toast.makeText(getApplicationContext(), "Record Start:" + mVoicePath, Toast.LENGTH_SHORT).show();
-					Log.d(TAG, "Record Start:" + mVoicePath);
-
-					try {
-						mAudioRecorder.start();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} else if (v.getId() == R.id.btnVoiceRecordStop) {
-					Toast.makeText(getApplicationContext(), "Record Stop", Toast.LENGTH_SHORT).show();
-					Log.d(TAG, "Record Stop");
-					try {
-						mAudioRecorder.stop();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} else if (v.getId() == R.id.btnVoicePlay) {
-					
-					
-					MediaPlayer mediaPlayer;
-                    mediaPlayer = new MediaPlayer();
-                    try {
-						mediaPlayer.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath() + mVoicePath);
-	                    mediaPlayer.prepare();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						Log.e(TAG, "error: " + e.getMessage(), e);
-					}
-                    mediaPlayer.start();
-                    
-                    Log.d(TAG, "Play:" + mVoicePath);
-					Toast.makeText(getApplicationContext(), "Play:" + mVoicePath, Toast.LENGTH_SHORT).show();
-				}
-				*/
 			}
 		};
 		
-		// 클릭 이벤트 연결
-//		findViewById(R.id.btnVoiceRecordStart).setOnClickListener(levelClickListener);
-//		findViewById(R.id.btnVoiceRecordStop).setOnClickListener(levelClickListener);
-//		findViewById(R.id.btnVoicePlay).setOnClickListener(levelClickListener);
 		
 		// ------------------------------------------
 		// Flip 관련
@@ -234,19 +190,8 @@ public class MirrorMain extends Activity {
 			}
 		};
 		
-		/*
-		OnClickListener clickListener = new OnClickListener() {
-
-			public void onClick(View v) {
-				Log.d(TAG, "click");
-				Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
-			}
-		};
-		*/
-    	
 		m_viewFlipper = (ViewFlipper)findViewById(R.id.viewFlipper);
 		m_viewFlipper.setOnTouchListener(MyTouchListener);
-//		m_viewFlipper.setOnClickListener(clickListener);
 		m_viewFlipper.removeAllViews();	// 초기화
 		
 		CardAccesser cardAccesser = new CardAccesser(getApplicationContext());
@@ -257,30 +202,35 @@ public class MirrorMain extends Activity {
 
         	imageView.setTag(card);
         	
-        	/*
-        	imageView.setOnClickListener(new OnClickListener() {
-
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Card card = (Card)v.getTag();
-					Toast.makeText(getApplicationContext(), card.getWord(), Toast.LENGTH_SHORT).show();
-				}
-        	});
-        	*/
 			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
         	imageView.setImageBitmap(bitmap);
+        	imageView.setBackgroundResource(R.drawable.card_background);
+        	imageView.setPadding(30,30,30,30);
         	
 			RelativeLayout out = new RelativeLayout(getApplicationContext());
-
-			TextView tv = new TextView(getApplicationContext());
-			tv.setText(card.getWord());
-			tv.setVisibility(View.GONE);
+			out.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			
+			
+			TextView textView = new TextView(getApplicationContext());
+			textView.setText(card.getWord());
+			textView.setVisibility(View.GONE);
+			textView.setPadding(30,30,30,30);
+			
+//			textView.setWidth(340);
+//			textView.setHeight(256);
+			textView.setWidth(440);
+			textView.setHeight(356);
+			textView.setTextSize(100.0f);
+			textView.setTextColor(Color.BLACK);
+			textView.setBackgroundResource(R.drawable.card_background);
+			
+			textView.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			textView.setGravity(Gravity.CENTER);
 
 			out.addView(imageView);
-			out.addView(tv);
+			out.addView(textView);
 
 			m_viewFlipper.addView(out);
-//        	m_viewFlipper.addView(imageView);
         }
 	}
 	
