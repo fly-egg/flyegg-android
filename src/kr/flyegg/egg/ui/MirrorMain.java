@@ -196,7 +196,15 @@ public class MirrorMain extends Activity {
 						
 						// ------------------------------------------
 						// 회전 관련 초기화
-						isFirstImage = true;
+						if (isFirstImage == false) {
+							// 이미 돌아간 경우 역회전 시킴
+							RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+							ImageView imageView = (ImageView)out.getChildAt(0);
+							TextView textView = (TextView)out.getChildAt(1);
+
+							applyRotation(imageView, textView, 0, -90);
+							isFirstImage = !isFirstImage;
+						}
 						
 						if (nTouchPosX < m_nPreTouchPosX) {
 							MoveNextView();
