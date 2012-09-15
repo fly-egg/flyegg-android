@@ -4,58 +4,73 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="메모리 게임 1단계"
-        android:textSize="25sp" />
-
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="300dip"
-        android:layout_height="300dip"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/chick" />
-
-    <TextView
-        android:id="@+id/tvCongratulations"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="1단계를 모두 맞췄군요! 참 잘했어요!!"
-        android:textSize="25sp" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:layout_width="match_parent"
+        android:layout_height="44dip"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/bar_tab"
+        android:orientation="vertical"
+        android:paddingTop="10sp" >
 
-        <Button
-            android:id="@+id/btnMain"
-            android:layout_width="200dip"
-            android:layout_height="200dip"
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:onClick="onClick"
-            android:text="메인" />
-
-        <Button
-            android:id="@+id/btnRetry"
-            android:layout_width="200dip"
-            android:layout_height="200dip"
-            android:layout_gravity="center_horizontal"
-            android:onClick="onClick"
-            android:text="반복" />
-
-        <Button
-            android:id="@+id/btnNext"
-            android:layout_width="200dip"
-            android:layout_height="200dip"
-            android:layout_gravity="center_horizontal"
-            android:onClick="onClick"
-            android:text="다음단계" />
+            android:text="짝꿍카드-1단계"
+            android:textColor="#cccccc"
+            android:textSize="20sp" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="300dip"
+            android:layout_height="300dip"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/chick" />
+
+        <TextView
+            android:id="@+id/tvCongratulations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="1단계를 모두 맞췄군요! 참 잘했어요!!"
+            android:textSize="25sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnMain"
+                android:layout_width="200dip"
+                android:layout_height="200dip"
+                android:layout_gravity="center_horizontal"
+                android:onClick="onClick"
+                android:text="메인" />
+
+            <Button
+                android:id="@+id/btnRetry"
+                android:layout_width="200dip"
+                android:layout_height="200dip"
+                android:layout_gravity="center_horizontal"
+                android:onClick="onClick"
+                android:text="반복" />
+
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="200dip"
+                android:layout_height="200dip"
+                android:layout_gravity="center_horizontal"
+                android:onClick="onClick"
+                android:text="다음단계" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
