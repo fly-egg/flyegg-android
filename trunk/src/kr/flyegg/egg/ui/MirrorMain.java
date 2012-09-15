@@ -4,10 +4,14 @@ import java.io.IOException;
 import java.util.List;
 
 import kr.flyegg.egg.R;
+import kr.flyegg.egg.dao.Card;
+import kr.flyegg.egg.dao.CardAccesser;
 import kr.flyegg.egg.mirror.AudioRecorder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
@@ -15,16 +19,23 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 public class MirrorMain extends Activity {
 	private static final String TAG = "MirrorMain";
@@ -47,7 +58,15 @@ public class MirrorMain extends Activity {
     
     private String mVoicePath = "/voice.3gp";
 	private AudioRecorder mAudioRecorder = new AudioRecorder(mVoicePath);
+
+	boolean recordToggle = false;	// 녹음 버튼 토글
+
+	// ------------------------------------------
+	// Flip 관련
 	
+	private ViewFlipper m_viewFlipper;
+	private int m_nPreTouchPosX = 0;
+
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +83,9 @@ public class MirrorMain extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
+
+        
+
 		
 		// ------------------------------------------
 		// 카메라 세팅
@@ -103,6 +124,7 @@ public class MirrorMain extends Activity {
 		OnClickListener levelClickListener = new OnClickListener() {
 
 			public void onClick(View v) {
+				/*
 				if (v.getId() == R.id.btnVoiceRecordStart) {
 					Toast.makeText(getApplicationContext(), "Record Start:" + mVoicePath, Toast.LENGTH_SHORT).show();
 					Log.d(TAG, "Record Start:" + mVoicePath);
@@ -140,13 +162,93 @@ public class MirrorMain extends Activity {
                     Log.d(TAG, "Play:" + mVoicePath);
 					Toast.makeText(getApplicationContext(), "Play:" + mVoicePath, Toast.LENGTH_SHORT).show();
 				}
+				*/
 			}
 		};
 		
 		// 클릭 이벤트 연결
-		findViewById(R.id.btnVoiceRecordStart).setOnClickListener(levelClickListener);
-		findViewById(R.id.btnVoiceRecordStop).setOnClickListener(levelClickListener);
-		findViewById(R.id.btnVoicePlay).setOnClickListener(levelClickListener);
+//		findViewById(R.id.btnVoiceRecordStart).setOnClickListener(levelClickListener);
+//		findViewById(R.id.btnVoiceRecordStop).setOnClickListener(levelClickListener);
+//		findViewById(R.id.btnVoicePlay).setOnClickListener(levelClickListener);
+		
+		// ------------------------------------------
+		// Flip 관련
+		OnTouchListener MyTouchListener = new OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					m_nPreTouchPosX = (int) event.getX();
+				}
+
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					int nTouchPosX = (int) event.getX();
+
+					if (Math.abs(nTouchPosX - m_nPreTouchPosX) > 10) {
+						if (nTouchPosX < m_nPreTouchPosX) {
+							MoveNextView();
+						} else if (nTouchPosX > m_nPreTouchPosX) {
+							MovewPreviousView();
+						}
+					} else {
+						Card card = (Card)m_viewFlipper.getCurrentView().getTag();
+						Toast.makeText(getApplicationContext(), card.getWord(), Toast.LENGTH_SHORT).show();
+					}
+
+					m_nPreTouchPosX = nTouchPosX;
+				}
+
+				return true;
+//				return false;
+			}
+		};
+		
+		/*
+		OnClickListener clickListener = new OnClickListener() {
+
+			public void onClick(View v) {
+				Log.d(TAG, "click");
+				Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
+			}
+		};
+		*/
+    	
+		m_viewFlipper = (ViewFlipper)findViewById(R.id.viewFlipper);
+		m_viewFlipper.setOnTouchListener(MyTouchListener);
+//		m_viewFlipper.setOnClickListener(clickListener);
+		m_viewFlipper.removeAllViews();	// 초기화
+		
+		CardAccesser cardAccesser = new CardAccesser(getApplicationContext());
+        List<Card> list = cardAccesser.getCardList();
+        
+        for (Card card : list) {
+        	ImageView imageView = new ImageView(this);
+//			TextView tv = new TextView(this);
+//			tv.setText(card.getWord());
+//			tv.setTextColor(Color.CYAN);
+
+        	imageView.setTag(card);
+        	
+        	/*
+        	imageView.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					Card card = (Card)v.getTag();
+					Toast.makeText(getApplicationContext(), card.getWord(), Toast.LENGTH_SHORT).show();
+				}
+        	});
+        	*/
+			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
+//			Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+
+//        	card.setThumbnail(resizedBitmap);
+//        	cardsListFromDB.add(card);
+
+//        	imageView.setImageBitmap(card.getThumbnail());
+        	imageView.setImageBitmap(bitmap);
+
+        	m_viewFlipper.addView(imageView);
+        }
 	}
 	
 	@Override
@@ -171,12 +273,76 @@ public class MirrorMain extends Activity {
 		}
 	}
 
+	/**
+	 * 버튼 클릭 이벤트
+	 * @param v
+	 */
+	public void onClick(View v) {
+		if (v.getId() == R.id.btnVoiceRecord) {
+			if (recordToggle == false) {
+				Toast.makeText(getApplicationContext(), "Record Start:" + mVoicePath, Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "Record Start:" + mVoicePath);
+
+				try {
+					mAudioRecorder.start();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				recordToggle = true;
+			} else {
+				Toast.makeText(getApplicationContext(), "Record Stop", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "Record Stop");
+				try {
+					mAudioRecorder.stop();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				recordToggle = false;
+			}
+
+		} else if (v.getId() == R.id.btnVoicePlay) {
+			// 재생 버튼 클릭
+			MediaPlayer mediaPlayer;
+            mediaPlayer = new MediaPlayer();
+            try {
+				mediaPlayer.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath() + mVoicePath);
+                mediaPlayer.prepare();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Log.e(TAG, "error: " + e.getMessage(), e);
+			}
+            mediaPlayer.start();
+            
+            Log.d(TAG, "Play:" + mVoicePath);
+			Toast.makeText(getApplicationContext(), "Play:" + mVoicePath, Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	
 	@Override
 	protected void onDestroy() {
-
 		super.onDestroy();
-		
 	}
+
+    private void MoveNextView()
+    {
+    	m_viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,	R.anim.appear_from_right));
+		m_viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.disappear_to_left));
+		m_viewFlipper.showNext();
+    }
+    
+    private void MovewPreviousView()
+    {
+    	m_viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,	R.anim.appear_from_left));
+		m_viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.disappear_to_right));
+    	m_viewFlipper.showPrevious();
+    }
+    
+
+
 }
 
 
@@ -258,10 +424,12 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
 			int previewWidth = width;
 			int previewHeight = height;
+			/*
 			if (mPreviewSize != null) {
 				previewWidth = mPreviewSize.width;
 				previewHeight = mPreviewSize.height;
 			}
+			*/
 
 			// Center the child SurfaceView within the parent.
 			if (width * previewHeight > height * previewWidth) {
