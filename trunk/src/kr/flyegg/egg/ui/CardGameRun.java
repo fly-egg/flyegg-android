@@ -228,6 +228,18 @@ public class CardGameRun extends Activity {
 		// 타이틀 변경하기
 		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
 		tvTitle.setText("짝꿍카드-" + mLevel + "단계");
+		
+		// 
+		{
+			ImageView imageView = (ImageView) findViewById(R.id.ivTitle);
+			if (mLevel == 1) {
+				imageView.setImageResource(R.drawable.info_egg_1);
+			} else if (mLevel == 2) {
+				imageView.setImageResource(R.drawable.info_egg_2);
+			} else if (mLevel == 3) {
+				imageView.setImageResource(R.drawable.info_egg_3);
+			}
+		}
 
 		Log.d(TAG, "DrawTable start");
 
