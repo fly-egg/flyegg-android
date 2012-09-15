@@ -2,13 +2,17 @@ package kr.flyegg.egg.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import kr.flyegg.egg.R;
 import kr.flyegg.egg.cardgame.GameCard;
 import kr.flyegg.egg.dao.Card;
+import kr.flyegg.egg.dao.CardAccesser;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +21,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
@@ -38,6 +43,13 @@ public class CardGameRun extends Activity {
 	private static final int ACTIVITY_FINISH = 2;
 	
 	private Animation mAnimFade;	// 카드뒤집기 페이드 애니메이션
+
+	// ------------------------
+	// 카드 이미지 정보
+	private Bitmap mCardBackSideBitmap;	// 카드 뒷면 이미지
+	private static final int CARD_WIDTH = 200;	// 가로 사이즈
+	private static final int CARD_HEIGHT = 200;	// 세로 사이즈
+	
 
 	// ------------------------
 	// 판수 변수들
@@ -63,7 +75,12 @@ public class CardGameRun extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		// ------------------------
+		// 카드 뒷면 이미지
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+		mCardBackSideBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+		
 		// ------------------------
 		// 애니메이션 설정
 		mAnimFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
@@ -143,41 +160,26 @@ public class CardGameRun extends Activity {
 	 * @return
 	 */
 	private ArrayList<Card> getCardListDB(String category, String tag) {
+
 		ArrayList<Card> cardsListFromDB = new ArrayList<Card>();
-		
-		int num = 8;
-        final Integer[] imageIds = {
-                R.drawable.gallery_photo_1,
-                R.drawable.gallery_photo_2,
-                R.drawable.gallery_photo_3,
-                R.drawable.gallery_photo_4,
-                R.drawable.gallery_photo_5,
-                R.drawable.gallery_photo_6,
-                R.drawable.gallery_photo_7,
-                R.drawable.gallery_photo_8
-        };
+
+		// ------------------------
+		// 카드 데이터 테스트
+		CardAccesser cardAccesser = new CardAccesser(getApplicationContext());
+        List<Card> list = cardAccesser.getCardList();
         
-        final String[] words = {
-        		"토끼", "거북이", "고양이", "말", "호랑이", "사자", "곰", "강아지"
-        };
-        
-        final String[] tags = {
-        	"철수"	
-        };
-        
-        for (int i=0; i<num; i++) {
-        	Card card = new Card();
-        	
-        	card.setWord(words[i]);
-        	card.setImgPath("" + imageIds[i]);
-        	card.setCategory(category);
-        	card.setTags(tags);
-//        	card.setThumbnail(thumbnail);	// 썸네일은 생략
-        	
+        for (Card card : list) {
+        	// 축소 이미지 만들기
+			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
+			Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+
+        	card.setThumbnail(resizedBitmap);
         	cardsListFromDB.add(card);
+        	
+        	Log.d(TAG, "word=" + card.getWord());
         }
-		
-		return cardsListFromDB;
+
+        return cardsListFromDB;
 	}
 
 	/**
@@ -296,12 +298,13 @@ public class CardGameRun extends Activity {
 
 				// Create a Button to be the row-content
 				Log.d(TAG, "Create a button");
-				Button btn = new Button(this);
+				ImageView imageView = new ImageView(this);
 				
 				// 카드 정보
 				GameCard gameCard = new GameCard();
 				gameCard.setSide(GameCard.SIDE_BACK); // 카드는 기본적으로 뒷면을 향함
-				btn.setBackgroundResource(R.drawable.ic_launcher); // 뒷면 이미지 // TODO: 뒷면 이미지 리소스로 변경
+				
+				imageView.setImageBitmap(mCardBackSideBitmap);	// 뒷면 이미지
 
 				// 카드 번호 지정
 				gameCard.setCardNo(cardsList.get(0));
@@ -310,26 +313,27 @@ public class CardGameRun extends Activity {
 				// 카드 정보를 태그에 기록
 				// btn.setTag(gameCard);
 				Log.d(TAG, "setTag cardNo=" + cardNo);
-				btn.setTag(cardNo);
+				imageView.setTag(cardNo);
 
 				// DB에서 조회해온 카드를 앞에서 부터 순서대로 넣음
 				gameCard.setCard(mCardsListFromDB.get(gameCard.getCardNo()));
 				cardNo++;
 
-				gameCard.setView(btn);
+				gameCard.setView(imageView);
 				mGameCards.add(gameCard);
 
 				// 사이즈
 				Log.d(TAG, "Set Card Size");
-				btn.setWidth(200);
-				btn.setHeight(200);
-
-				btn.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				btn.setOnClickListener(cardClickListener);
+				
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(300, 300);
+				imageView.setLayoutParams(layoutParams);
+				
+				imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				imageView.setOnClickListener(cardClickListener);
 
 				Log.d(TAG, "Add Card to row");
 				// Add Card Button to row
-				tableRow.addView(btn);
+				tableRow.addView(imageView);
 			}
 
 			// Add row to TableLayout
@@ -446,31 +450,36 @@ public class CardGameRun extends Activity {
 				gameCard.setSide(GameCard.SIDE_FRONT);
 				gameCard.setChecked(true); // 선택처리
 
+				ImageView imageView = (ImageView)v;
+				
+				// 실제 카드 정보
 				Card card = gameCard.getCard();
 				
-				// TODO: 실제 이미지인 경우에 대한 처리 필요
-				//v.setBackgroundDrawable(background) 로 해야 되나?
+				// 애니메이션 효과 넣기
+				// 애니메이션 설정
+				Animation mAnimFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
+				// 애니메이션 후처리 리스너 붙이기
+				mAnimFade.setAnimationListener(mCardFlipAnimationListener);
 
-				v.startAnimation(mAnimFade);
-				v.setBackgroundResource(Integer.parseInt(card.getImgPath()));
+				imageView.startAnimation(mAnimFade);
+				
+//				Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
+//				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+				
+//				imageView.setImageBitmap(resizedBitmap);
+				imageView.setImageBitmap(card.getThumbnail());
 			} else {
 				// 이미 선택된 카드 클릭시 아무것도 하지 않음
 				return;
 			}
 		}
-	};
+	};	// end 카드클릭처리
+
 
 	/**
 	 * 선택된 카드들 뒤로 뒤집기
 	 */
 	private void flipCheckedCards() {
-		/*
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		*/
 
 		for (int i = 0; i < mGameCards.size(); i++) {
 			if (mGameCards.get(i).isChecked()) {
@@ -479,7 +488,15 @@ public class CardGameRun extends Activity {
 				// 선택된 카드 다시 뒤집기
 				mGameCards.get(i).setSide(GameCard.SIDE_BACK);
 				view.startAnimation(mAnimFade);
-				view.setBackgroundResource(R.drawable.ic_launcher);	// 카드 뒷면 사진으로 교체
+				
+				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+				
+				ImageView imageView = (ImageView)view;
+				
+				// 카드 뒷면 표시
+//				imageView.setImageResource(0);
+				imageView.setImageBitmap(resizedBitmap);
 
 				mGameCards.get(i).setChecked(false);
 			}
