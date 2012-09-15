@@ -6,6 +6,7 @@ import java.util.List;
 import kr.flyegg.egg.R;
 import kr.flyegg.egg.dao.Category;
 import kr.flyegg.egg.dao.CategoryAccesser;
+import kr.flyegg.egg.ui.tabview.AllOfAllActivity;
 import kr.flyegg.egg.ui.tabview.PlusActivity;
 import kr.flyegg.egg.ui.tabview.TabViewActivity;
 import android.annotation.SuppressLint;
@@ -49,8 +50,11 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.card_board);
+		
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		tabHost = getTabHost();
@@ -60,7 +64,7 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 		//무조건 들어가야하는 전체 탭
 		tabHost.addTab(tabHost.newTabSpec(getString(R.string.all_tab))
                 .setIndicator(getString(R.string.all_tab))
-                .setContent(this));
+                .setContent(new Intent(CardBoard.this, AllOfAllActivity.class)));
 		
 		//여기서부터 동적으로 동작하기
 		setCategory(tabHost);
@@ -81,20 +85,6 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 		});
 		
 		
-//		 for (int i=1; i <= 30; i++) {
-//            String name = "Tab " + i;
-//            tabHost.addTab(tabHost.newTabSpec(name)
-//                    .setIndicator(name)
-//                    .setContent(this));
-//        }
-		
-//		spec = tabHost.newTabSpec("test");
-//		tabHost.addTab( spec );
-//		spec = tabHost.newTabSpec("test1");
-//		tabHost.addTab(spec);
-//		spec = tabHost.newTabSpec("test2");
-//		tabHost.addTab(spec);
-//		
 		tabHost.setCurrentTab( 0 );
 		
 		
@@ -113,8 +103,6 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 				});
 			}
 		}
-		
-		
 	}
 
 	
@@ -168,6 +156,7 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
                  public void onClick(DialogInterface dialog, int whichButton) {
                 	 //취소
                 	 dialog.cancel();
+                	 restart();
                  }
              })
              .create();
@@ -186,13 +175,20 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 		CategoryAccesser accesser = new CategoryAccesser(getApplicationContext());
 		accesser.insert(new Category(category));
 		
+		restart();
+//		recreate();
+	}
+
+
+
+	private void restart() {
 		closeDialog();
 		
 		Intent intent = getIntent();
 		finish();
 		startActivity(intent);
-//		recreate();
 	}
+	
 	
 
 	private void closeDialog() {
@@ -201,6 +197,8 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
 			dialog = null;
 		}
 	}
+
+
 	
 	public View createTabContent(String tag) {
 //    	GridView imagegrid = (GridView) findViewById(R.id.gridview);

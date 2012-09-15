@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -66,27 +67,82 @@ public class CardSlideFilpper extends Activity {
     	m_viewFlipper.showPrevious();
     }
     
-    View.OnTouchListener MyTouchListener = new View.OnTouchListener() {
-    	public boolean onTouch(View v, MotionEvent event) {
-    		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-    			m_nPreTouchPosX = (int)event.getX();
-    		}
-    		
-    		if (event.getAction() == MotionEvent.ACTION_UP) {
-    			int nTouchPosX = (int)event.getX();
-    			
-    			if (nTouchPosX < m_nPreTouchPosX) {
-    				MoveNextView();
-    			} else if (nTouchPosX > m_nPreTouchPosX) {
-    				MovewPreviousView();
-    			}
-    			
-    			m_nPreTouchPosX = nTouchPosX;
-    		}
-    		
-            return true;
-        }
-    };
+	OnTouchListener MyTouchListener = new OnTouchListener() {
+		public boolean onTouch(View v, MotionEvent event) {
+			
+			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				m_nPreTouchPosX = (int) event.getX();
+			}
+
+			if (event.getAction() == MotionEvent.ACTION_UP) {
+				int nTouchPosX = (int) event.getX();
+
+				
+				if (Math.abs(nTouchPosX - m_nPreTouchPosX) > 10) {
+					// ------------------------------------------
+					// 슬라이드
+					
+					// ------------------------------------------
+					// 회전 관련 초기화
+					if (isFirstImage == false) {
+						// 이미 돌아간 경우 역회전 시킴
+						RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+						ImageView imageView = (ImageView)out.getChildAt(0);
+						TextView textView = (TextView)out.getChildAt(1);
+
+						applyRotation(imageView, textView, 0, -90);
+						isFirstImage = !isFirstImage;
+					}
+					
+					if (nTouchPosX < m_nPreTouchPosX) {
+						MoveNextView();
+					} else if (nTouchPosX > m_nPreTouchPosX) {
+						MovewPreviousView();
+					}
+				} else {
+					// 터치
+					RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+					ImageView imageView = (ImageView)out.getChildAt(0);
+					TextView textView = (TextView)out.getChildAt(1);
+
+					if (isFirstImage) {
+						applyRotation(imageView, textView, 0, 90);
+						isFirstImage = !isFirstImage;
+					} else {
+						applyRotation(imageView, textView, 0, -90);
+						isFirstImage = !isFirstImage;
+					}
+				}
+
+				m_nPreTouchPosX = nTouchPosX;
+			}
+
+			return true;
+//			return false;
+		}
+	};
+    
+//    View.OnTouchListener MyTouchListener = new View.OnTouchListener() {
+//    	public boolean onTouch(View v, MotionEvent event) {
+//    		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//    			m_nPreTouchPosX = (int)event.getX();
+//    		}
+//    		
+//    		if (event.getAction() == MotionEvent.ACTION_UP) {
+//    			int nTouchPosX = (int)event.getX();
+//    			
+//    			if (nTouchPosX < m_nPreTouchPosX) {
+//    				MoveNextView();
+//    			} else if (nTouchPosX > m_nPreTouchPosX) {
+//    				MovewPreviousView();
+//    			}
+//    			
+//    			m_nPreTouchPosX = nTouchPosX;
+//    		}
+//    		
+//            return true;
+//        }
+//    };
     
     
     
@@ -127,10 +183,10 @@ public class CardSlideFilpper extends Activity {
         return true;
     }
     
-    private void applyRotation(ImageView image, TextView tv1, float start, float end) {
+    private void applyRotation(View view1, View view2, float start, float end) {
 		// Find the center of image
-		final float centerX = image.getWidth() / 2.0f;
-		final float centerY = image.getHeight() / 2.0f;
+		final float centerX = view1.getWidth() / 2.0f;
+		final float centerY = view1.getHeight() / 2.0f;
 	
 		// Create a new 3D rotation with the supplied parameter
 		// The animation listener is used to trigger the next animation
@@ -138,12 +194,12 @@ public class CardSlideFilpper extends Activity {
 		rotation.setDuration(500);
 		rotation.setFillAfter(true);
 		rotation.setInterpolator(new AccelerateInterpolator());
-		rotation.setAnimationListener(new DisplayNextView(isFirstImage, image, tv1));
+		rotation.setAnimationListener(new DisplayNextView(isFirstImage, view1, view2));
 	
 		if (isFirstImage) {
-			image.startAnimation(rotation);
+			view1.startAnimation(rotation);
 		} else {
-			tv1.startAnimation(rotation);
+			view2.startAnimation(rotation);
 		}
 
 	}
