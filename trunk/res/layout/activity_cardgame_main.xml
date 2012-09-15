@@ -58,8 +58,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="과일야채 > 의성어 SET 선택 中 [변경]"
+            android:text="과일야채 > 의성어 SET 선택 中 "
             android:textSize="35sp" />
+        
+        <Button
+            android:id="@+id/btnChangeCardSet"
+            android:layout_width="300dip"
+            android:layout_height="80dip"
+            android:text="변경"
+            android:onClick="onClick"
+            android:textSize="30sp" />
+        
     </LinearLayout>
 
     <LinearLayout

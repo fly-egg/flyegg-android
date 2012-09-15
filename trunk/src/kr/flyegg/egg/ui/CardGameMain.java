@@ -73,6 +73,23 @@ public class CardGameMain extends Activity {
 		findViewById(R.id.btnGameHard).setOnClickListener(levelClickListener);
 
 	}
+	
+	/**
+	 * onClick 이벤트
+	 * @param v
+	 */
+	public void onClick(View v) {
+
+		if (v.getId() == R.id.btnChangeCardSet) {
+			// 카드셋 선택 화면으로 이동
+	    	Intent i = new Intent(getApplicationContext(), CardBoard.class);
+	    	startActivity(i);
+	    	
+	    	// 이 창은 닫음
+	    	finish();
+		}
+	}
+
 
 	@Override
 	protected void onDestroy() {
