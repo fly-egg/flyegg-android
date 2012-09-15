@@ -50,8 +50,8 @@ public class CardGameRun extends Activity {
 	// ------------------------
 	// 카드 이미지 정보
 	private Bitmap mCardBackSideBitmap;	// 카드 뒷면 이미지
-	private static final int CARD_WIDTH = 200;	// 가로 사이즈
-	private static final int CARD_HEIGHT = 200;	// 세로 사이즈
+	private static int mCardWidth = 271;	// 가로 사이즈
+	private static int mCardHeight = 205;	// 세로 사이즈
 	
 
 	// ------------------------
@@ -83,8 +83,8 @@ public class CardGameRun extends Activity {
 
 		// ------------------------
 		// 카드 뒷면 이미지
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-		mCardBackSideBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.card_back_2);
+		mCardBackSideBitmap = Bitmap.createScaledBitmap(bitmap, mCardWidth, mCardHeight, true);
 		
 		// ------------------------
 		// 애니메이션 설정
@@ -176,7 +176,7 @@ public class CardGameRun extends Activity {
         for (Card card : list) {
         	// 축소 이미지 만들기
 			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
-			Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+			Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, mCardWidth, mCardHeight, true);
 
         	card.setThumbnail(resizedBitmap);
         	cardsListFromDB.add(card);
@@ -298,13 +298,22 @@ public class CardGameRun extends Activity {
 			// create a row
 			TableRow tableRow = new TableRow(this);
 			tableRow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			
+			TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+
+			int leftMargin = 10;
+			int topMargin = 2;
+			int rightMargin = 10;
+			int bottomMargin = 2;
+
+			tableRowParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin);
 
 			for (int j = 0; j < col; j++) { // column loop
 
 				// Create a Button to be the row-content
 				Log.d(TAG, "Create a button");
 				ImageView imageView = new ImageView(this);
-				
+
 				// 카드 정보
 				GameCard gameCard = new GameCard();
 				gameCard.setSide(GameCard.SIDE_BACK); // 카드는 기본적으로 뒷면을 향함
@@ -330,7 +339,7 @@ public class CardGameRun extends Activity {
 				// 사이즈
 				Log.d(TAG, "Set Card Size");
 				
-				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(300, 300);
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 				imageView.setLayoutParams(layoutParams);
 				
 				imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -512,8 +521,8 @@ public class CardGameRun extends Activity {
 
 				view.startAnimation(animFade);
 				
-				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
+				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.card_back_2);
+				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, mCardWidth, mCardHeight, true);
 				
 				ImageView imageView = (ImageView)view;
 				

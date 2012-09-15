@@ -31,6 +31,10 @@ public class CardGameClearPopup extends Activity {
 		// ------------------------
 		// 화면 설정
 		setContentView(R.layout.activity_cardgame_clear_popup);
+		
+		// ------------------------
+		// 바로 다음으로 진행
+		onClick(findViewById(R.id.btnNext));
 	}
 
 	@Override
