@@ -1,7 +1,6 @@
 package kr.flyegg.egg;
 
 import kr.flyegg.egg.dao.db.FlyEggDBHelper;
-import kr.flyegg.egg.ui.AddCardMain;
 import kr.flyegg.egg.ui.CardBoard;
 import kr.flyegg.egg.ui.CardGameMain;
 import kr.flyegg.egg.ui.CardSlideFilpper;
@@ -11,30 +10,34 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-	private Button wordCard = null;
+	private Button btnSmartCard = null;
 	private Button btnGame = null;
 	private Button btnMirror = null;
-	private Button btnAddCard = null;
+	private Button btnSelectCard = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	requestWindowFeature(Window.FEATURE_NO_TITLE);
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
         //prevent to turn off window
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
-        wordCard = (Button) findViewById(R.id.workd_card);
-        wordCard.setOnClickListener(new OnClickListener() {
+
+        btnSmartCard = (Button) findViewById(R.id.btnsmartCard);
+        btnSmartCard.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				callWordCardActivity();
+				callCardFlipActivity();
 			}
 		});
         
@@ -54,29 +57,16 @@ public class MainActivity extends Activity {
 			}
 		});
         
-        btnAddCard = (Button) findViewById(R.id.btnAddCard);
-        btnAddCard.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		callAddCardActivity();
-        	}
-        });
-        
-        Button bt2 = (Button) findViewById(R.id.btntest);
-        bt2.setOnClickListener(new OnClickListener() {
+        btnSelectCard = (Button) findViewById(R.id.btnSelectCard);
+        btnSelectCard.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				test();
+				callSelectCardActivity();
 			}
 		});
         
         
         createDB();
-    }
-    
-    private void test() {
-    	Intent i = new Intent(getApplicationContext(), CardSlideFilpper.class);
-    	startActivity(i);
     }
     
     
@@ -86,8 +76,8 @@ public class MainActivity extends Activity {
 		helper.close();
 	}
     
-    private void callWordCardActivity() {
-    	Intent i = new Intent(getApplicationContext(), CardBoard.class);
+    private void callCardFlipActivity() {
+    	Intent i = new Intent(getApplicationContext(), CardSlideFilpper.class);
     	startActivity(i);
     }
     
@@ -110,8 +100,8 @@ public class MainActivity extends Activity {
     /**
      * Add Card
      */
-    private void callAddCardActivity() {
-    	Intent i = new Intent(getApplicationContext(), AddCardMain.class);
+    private void callSelectCardActivity() {
+    	Intent i = new Intent(getApplicationContext(), CardBoard.class);
     	startActivity(i);
     }
 
