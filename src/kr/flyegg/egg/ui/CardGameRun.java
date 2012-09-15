@@ -124,12 +124,12 @@ public class CardGameRun extends Activity {
 		if (mCardsListFromDB.size() < pairs) {
 			Toast.makeText(getApplicationContext(), "카드가 부족해서 게임을 진행 할 수 없습니다 ㅠㅜ", Toast.LENGTH_SHORT).show();			
 			finish();
+			return;
+		} else {
+			// ------------------------
+			// 레벨에 맞는 테이블 그리기
+			drawGameTable(pairs);
 		}
-
-		// ------------------------
-		// 레벨에 맞는 테이블 그리기
-		drawGameTable(pairs);
-
 		Log.d(TAG, "OnCreate Done");
 	}
 
