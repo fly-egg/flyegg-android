@@ -88,7 +88,7 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_right"
+                android:background="@drawable/btn_game_category_select"
                 android:paddingLeft="10sp"
                 android:text="과일야채 > 의성어 SET 선택 中 "
                 android:textColor="#4d4d4d"

@@ -9,7 +9,6 @@ import kr.flyegg.egg.R;
 import kr.flyegg.egg.cardgame.GameCard;
 import kr.flyegg.egg.dao.Card;
 import kr.flyegg.egg.dao.CardAccesser;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -324,6 +323,9 @@ public class CardGameRun extends Activity {
 
 				// Create a Button to be the row-content
 				Log.d(TAG, "Create a button");
+				
+				ViewFlipper viewFlipper = new ViewFlipper(getApplicationContext());
+
 				ImageView imageView = new ImageView(this);
 
 				// 카드 정보
@@ -341,6 +343,7 @@ public class CardGameRun extends Activity {
 				// btn.setTag(gameCard);
 				Log.d(TAG, "setTag cardNo=" + cardNo);
 				imageView.setTag(cardNo);
+				viewFlipper.setTag(cardNo);
 
 				// DB에서 조회해온 카드를 앞에서 부터 순서대로 넣음
 				gameCard.setCard(mCardsListFromDB.get(gameCard.getCardNo()));
@@ -358,15 +361,24 @@ public class CardGameRun extends Activity {
 				imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				imageView.setOnClickListener(cardClickListener);
 				
-				TextView textView = new TextView(getApplicationContext());
-				textView.setText("test");
 				
-				ViewFlipper viewFlipper = new ViewFlipper(getApplicationContext());
+//				ImageView imageView2 = new ImageView(getApplicationContext());
+//				imageView2.setImageResource(R.drawable.card_back_2);
+//				imageView2.setPadding(9, 9, 9, 9);
+				
+				Card card = gameCard.getCard();
+				ImageView imageView2 = new ImageView(getApplicationContext());
+				imageView2.setImageBitmap(card.getThumbnail());
+				imageView2.setPadding(9, 9, 9, 9);
+				
 				viewFlipper.addView(imageView);
-				viewFlipper.addView(textView);
-				
+				viewFlipper.addView(imageView2);
+
+				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade));
 //				viewFlipper.showNext();
 //				viewFlipper.startFlipping();
+				
+//				viewFlipper.setOnClickListener(cardClickListener);
 
 				Log.d(TAG, "Add Card to row");
 				// Add Card Button to row
@@ -476,7 +488,6 @@ public class CardGameRun extends Activity {
 
 		public void onClick(View v) {
 			Log.d(TAG, "Get Card Tag");
-			// GameCard gameCard = (GameCard) v.getTag();
 			Integer cardNo = (Integer) v.getTag();
 
 			Log.d(TAG, "CardNo:" + cardNo);
@@ -500,6 +511,7 @@ public class CardGameRun extends Activity {
 				gameCard.setSide(GameCard.SIDE_FRONT);
 				gameCard.setChecked(true); // 선택처리
 
+//				ViewFlipper viewFlipper = (ViewFlipper)v;
 				ImageView imageView = (ImageView)v;
 				
 				// 실제 카드 정보
@@ -511,10 +523,13 @@ public class CardGameRun extends Activity {
 				// 애니메이션 후처리 리스너 붙이기
 				mAnimFade.setAnimationListener(mCardFlipAnimationListener);
 				
+//				viewFlipper.getAnimation().setAnimationListener(mCardFlipAnimationListener);
+				
 				imageView.startAnimation(mAnimFade);
 				
 				// 카드 이미지 보여줌
 				imageView.setImageBitmap(card.getThumbnail());
+//				viewFlipper.showNext();
 			} else {
 				// 이미 선택된 카드 클릭시 아무것도 하지 않음
 				return;
