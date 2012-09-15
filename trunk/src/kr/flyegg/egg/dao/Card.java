@@ -98,7 +98,7 @@ public class Card {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Card[word=").append(word).append(",imgPath=").append(imgPath);
-		sb.append(",category=").append(category).append(",tags=").append(tags);
+		sb.append(",category=").append(category).append(",tags=").append(tagToString(tags));
 		sb.append("]");
 		
 		return sb.toString();

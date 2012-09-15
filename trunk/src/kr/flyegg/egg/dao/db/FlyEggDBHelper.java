@@ -39,7 +39,7 @@ public class FlyEggDBHelper extends SQLiteOpenHelper {
 			
 			db.execSQL("CREATE TABLE " + DBColumns.CATEGORY_TABLE + "(" +
 					DBColumns.CATEGORY_ID + " INTEGER PRIMARY KEY, " + 
-					DBColumns.CATEGORY_NAME + " VARCHAR(100), " +  
+					DBColumns.CATEGORY_NAME + " VARCHAR(300), " +  
 					DBColumns.CATEGORY_CREATEDDATE + " BIGINT);" );
 		
 		}
