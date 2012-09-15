@@ -32,6 +32,16 @@
         android:layout_marginLeft="100dip"
         android:text="잠깐" />
 
+    <Button
+        android:id="@+id/btnAddCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dip"
+        android:text="카드추가" />
+        
+            
+
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

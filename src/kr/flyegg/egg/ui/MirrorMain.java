@@ -7,6 +7,8 @@ import kr.flyegg.egg.R;
 import kr.flyegg.egg.dao.Card;
 import kr.flyegg.egg.dao.CardAccesser;
 import kr.flyegg.egg.mirror.AudioRecorder;
+import kr.flyegg.egg.ui.event.DisplayNextView;
+import kr.flyegg.egg.ui.event.Flip3dAnimation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -32,8 +34,11 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -63,6 +68,7 @@ public class MirrorMain extends Activity {
 
 	// ------------------------------------------
 	// Flip 관련
+	private boolean isFirstImage = true;
 	
 	private ViewFlipper m_viewFlipper;
 	private int m_nPreTouchPosX = 0;
@@ -183,15 +189,33 @@ public class MirrorMain extends Activity {
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					int nTouchPosX = (int) event.getX();
 
+					
 					if (Math.abs(nTouchPosX - m_nPreTouchPosX) > 10) {
+						// ------------------------------------------
+						// 슬라이드
+						
+						// ------------------------------------------
+						// 회전 관련 초기화
+						isFirstImage = true;
+						
 						if (nTouchPosX < m_nPreTouchPosX) {
 							MoveNextView();
 						} else if (nTouchPosX > m_nPreTouchPosX) {
 							MovewPreviousView();
 						}
 					} else {
-						Card card = (Card)m_viewFlipper.getCurrentView().getTag();
-						Toast.makeText(getApplicationContext(), card.getWord(), Toast.LENGTH_SHORT).show();
+						// 터치
+						RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+						ImageView imageView = (ImageView)out.getChildAt(0);
+						TextView textView = (TextView)out.getChildAt(1);
+
+						if (isFirstImage) {
+							applyRotation(imageView, textView, 0, 90);
+							isFirstImage = !isFirstImage;
+						} else {
+							applyRotation(imageView, textView, 0, -90);
+							isFirstImage = !isFirstImage;
+						}
 					}
 
 					m_nPreTouchPosX = nTouchPosX;
@@ -222,9 +246,6 @@ public class MirrorMain extends Activity {
         
         for (Card card : list) {
         	ImageView imageView = new ImageView(this);
-//			TextView tv = new TextView(this);
-//			tv.setText(card.getWord());
-//			tv.setTextColor(Color.CYAN);
 
         	imageView.setTag(card);
         	
@@ -239,15 +260,19 @@ public class MirrorMain extends Activity {
         	});
         	*/
 			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
-//			Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
-
-//        	card.setThumbnail(resizedBitmap);
-//        	cardsListFromDB.add(card);
-
-//        	imageView.setImageBitmap(card.getThumbnail());
         	imageView.setImageBitmap(bitmap);
+        	
+			RelativeLayout out = new RelativeLayout(getApplicationContext());
 
-        	m_viewFlipper.addView(imageView);
+			TextView tv = new TextView(getApplicationContext());
+			tv.setText(card.getWord());
+			tv.setVisibility(View.GONE);
+
+			out.addView(imageView);
+			out.addView(tv);
+
+			m_viewFlipper.addView(out);
+//        	m_viewFlipper.addView(imageView);
         }
 	}
 	
@@ -342,6 +367,33 @@ public class MirrorMain extends Activity {
     }
     
 
+    /**
+     * 회전
+     * @param view1
+     * @param view2
+     * @param start
+     * @param end
+     */
+	private void applyRotation(View view1, View view2, float start, float end) {
+		// Find the center of image
+		final float centerX = view1.getWidth() / 2.0f;
+		final float centerY = view1.getHeight() / 2.0f;
+
+		// Create a new 3D rotation with the supplied parameter
+		// The animation listener is used to trigger the next animation
+		final Flip3dAnimation rotation = new Flip3dAnimation(start, end, centerX, centerY);
+		rotation.setDuration(500);
+		rotation.setFillAfter(true);
+		rotation.setInterpolator(new AccelerateInterpolator());
+		rotation.setAnimationListener(new DisplayNextView(isFirstImage, view1, view2));
+
+		if (isFirstImage) {
+			view1.startAnimation(rotation);
+		} else {
+			view2.startAnimation(rotation);
+		}
+
+	}
 
 }
 
