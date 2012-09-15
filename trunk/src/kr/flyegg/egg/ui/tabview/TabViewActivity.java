@@ -35,21 +35,7 @@ public class TabViewActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tabs);
 		
-		///////////////////////////////////////////////////////////////////////////////////
-		//sticker
-		Gallery g = (Gallery) findViewById(R.id.gallery);
-        // Set the adapter to our custom adapter (below)
-        g.setAdapter(new ImageAdapter(this));
-        
-        // Set a item click listener, and just Toast the clicked position
-        g.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(TabViewActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-            }
-        });
 	}
-	
-	
 	
 	
 	@Override
