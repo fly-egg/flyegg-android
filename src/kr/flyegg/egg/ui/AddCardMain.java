@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -46,8 +47,14 @@ public class AddCardMain extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+//		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		setContentView(R.layout.activity_addcard_main);
+		
+//		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title_1);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
 
 		// ------------------------
 		// 카드 데이터 테스트
@@ -65,11 +72,11 @@ public class AddCardMain extends Activity {
 		
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				Toast.makeText(getApplicationContext(), "Spinner1: position=" + position + " id=" + id, Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(), "Spinner1: position=" + position + " id=" + id, Toast.LENGTH_SHORT).show();
 			}
 
 			public void onNothingSelected(AdapterView<?> parent) {
-				Toast.makeText(getApplicationContext(), "Spinner1: unselected", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(), "Spinner1: unselected", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -91,7 +98,8 @@ public class AddCardMain extends Activity {
 
 			public void onClick(View v) {
 				
-				if (v.getId() == R.id.btnAddCategory) {
+//				if (v.getId() == R.id.btnAddCategory) {
+				if (false) {
 					// 카테고리 추가 버튼
 					if (dialog == null) {
 						insertCategoryAlert();
@@ -152,19 +160,11 @@ public class AddCardMain extends Activity {
 					Toast.makeText(getApplicationContext(), "Wrong", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				
-				/*
-		    	Intent intent = new Intent(getApplicationContext(), CardGameRun.class);
-		    	intent.putExtra("LEVEL", level);
-		    	
-		    	startActivity(intent);
-//		    	startActivityForResult(intent, level);
-				*/
 			}
 		};
 		
 		// 레벨 클릭 이벤트 연결
-		findViewById(R.id.btnAddCategory).setOnClickListener(levelClickListener);
+//		findViewById(R.id.btnAddCategory).setOnClickListener(levelClickListener);
 		findViewById(R.id.btnAddCardFromGallery).setOnClickListener(levelClickListener);
 		findViewById(R.id.btnAddCardFromCamera).setOnClickListener(levelClickListener);
 		findViewById(R.id.btnOK).setOnClickListener(levelClickListener);
