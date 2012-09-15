@@ -1,10 +1,7 @@
 package kr.flyegg.egg;
 
-import java.util.List;
-
-import kr.flyegg.egg.dao.Card;
-import kr.flyegg.egg.dao.CardAccesser;
 import kr.flyegg.egg.dao.db.FlyEggDBHelper;
+import kr.flyegg.egg.ui.AddCardMain;
 import kr.flyegg.egg.ui.CardBoard;
 import kr.flyegg.egg.ui.CardGameMain;
 import kr.flyegg.egg.ui.CardSlideFilpper;
@@ -23,6 +20,7 @@ public class MainActivity extends Activity {
 	private Button wordCard = null;
 	private Button btnGame = null;
 	private Button btnMirror = null;
+	private Button btnAddCard = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +53,14 @@ public class MainActivity extends Activity {
 				callMirrorActivity();
 			}
 		});
+        
+        btnAddCard = (Button) findViewById(R.id.btnAddCard);
+        btnAddCard.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		callAddCardActivity();
+        	}
+        });
         
         Button bt2 = (Button) findViewById(R.id.btntest);
         bt2.setOnClickListener(new OnClickListener() {
@@ -98,6 +104,14 @@ public class MainActivity extends Activity {
      */
     private void callMirrorActivity() {
     	Intent i = new Intent(getApplicationContext(), MirrorMain.class);
+    	startActivity(i);
+    }
+    
+    /**
+     * Add Card
+     */
+    private void callAddCardActivity() {
+    	Intent i = new Intent(getApplicationContext(), AddCardMain.class);
     	startActivity(i);
     }
 
