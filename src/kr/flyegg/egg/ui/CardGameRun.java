@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import kr.flyegg.egg.R;
 import kr.flyegg.egg.cardgame.GameCard;
 import kr.flyegg.egg.dao.Card;
 import kr.flyegg.egg.dao.CardAccesser;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,8 +17,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -31,6 +30,7 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 /**
  * 카드게임
@@ -357,10 +357,20 @@ public class CardGameRun extends Activity {
 				
 				imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				imageView.setOnClickListener(cardClickListener);
+				
+				TextView textView = new TextView(getApplicationContext());
+				textView.setText("test");
+				
+				ViewFlipper viewFlipper = new ViewFlipper(getApplicationContext());
+				viewFlipper.addView(imageView);
+				viewFlipper.addView(textView);
+				
+//				viewFlipper.showNext();
+//				viewFlipper.startFlipping();
 
 				Log.d(TAG, "Add Card to row");
 				// Add Card Button to row
-				tableRow.addView(imageView);
+				tableRow.addView(viewFlipper);
 			}
 
 			// Add row to TableLayout
