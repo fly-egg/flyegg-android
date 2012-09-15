@@ -76,7 +76,7 @@ public class CardAccesser {
 				String _category 	= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_CATEGORY));
 				
 //				public Card(String word, String imgPath, String category, String tags) {
-				list.add(new Card(imgpath, word, tags, _category));
+				list.add(new Card(word, imgpath, _category, tags));
 				//thumbnail 부분 확인하기
 				//list.add(new Card(imgpath, word, tags));
 				
