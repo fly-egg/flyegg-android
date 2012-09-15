@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import kr.flyegg.egg.R;
 import kr.flyegg.egg.cardgame.GameCard;
@@ -42,7 +44,7 @@ public class CardGameRun extends Activity {
 	private static final int ACTIVITY_CLEAR_POPUP = 1;
 	private static final int ACTIVITY_FINISH = 2;
 	
-	private Animation mAnimFade;	// 카드뒤집기 페이드 애니메이션
+//	private Animation mAnimFade;	// 카드뒤집기 페이드 애니메이션
 
 	// ------------------------
 	// 카드 이미지 정보
@@ -83,9 +85,9 @@ public class CardGameRun extends Activity {
 		
 		// ------------------------
 		// 애니메이션 설정
-		mAnimFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
+//		mAnimFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
 		// 애니메이션 후처리 리스너 붙이기
-		mAnimFade.setAnimationListener(mCardFlipAnimationListener);
+//		mAnimFade.setAnimationListener(mCardFlipAnimationListener);
 
 		// ------------------------
 		// 화면 설정
@@ -364,6 +366,7 @@ public class CardGameRun extends Activity {
 							continue;
 						}
 
+						// -----------------------
 						// 이전 선택 카드 번호와 지금 선택 카드 번호가 같으면 맞음
 						if (mGameCards.get(preCheckedCardIndex).getCardNo() == mGameCards.get(i).getCardNo()) {
 							
@@ -374,41 +377,51 @@ public class CardGameRun extends Activity {
 							mGameCards.get(preCheckedCardIndex).setChecked(false);
 							mGameCards.get(i).setChecked(false);
 
+							// -----------------------
+							// 전부 해결된 경우
+							if (isAllSolved()) {
+								
+								mStageNow++;
+
+								if (mStageNow > TOTAL_STAGE) {
+									// 할당된 게임 모두 클리어 (ex. 3판)
+									// 메인, 다시하기, 다음단계 팝업 띄우기
+									Intent intent = new Intent(getApplicationContext(), CardGameFinish.class);
+									intent.putExtra(CardGameMain.EXTRA_LEVEL, mLevel);
+									startActivityForResult(intent, ACTIVITY_FINISH);
+
+									// 일단 게임은 끝났으니 해당 액티비티는 종료 시킴
+									// 상위 액티비티도 닫기 위해 플래그를 날림
+//									finish();
+								} else {
+
+									// 한판 클리어
+									// 참 잘했어요! 팝업 띄우기
+									Intent intent = new Intent(getApplicationContext(), CardGameClearPopup.class);
+									startActivityForResult(intent, ACTIVITY_CLEAR_POPUP);
+								}
+							}
 							// Toast.makeText(getApplicationContext(), "짝짝짝", Toast.LENGTH_SHORT).show();
 							break;
-						}
+						} // end if 두개의 카드가 같을 경우
 					}
-				}
+				} // end for 선택된 카드 두개 찾기용 루프
 			} // end if 두개 선택시 맞는지 틀린지 검사
-			
-			// 전부 해결
-			if (isAllSolved()) {
-
-				// 스테이지를 다음으로 넘김
-				mStageNow++;
-				
-				if (mStageNow > TOTAL_STAGE) {
-					// 할당된 게임 모두 클리어 (ex. 3판)
-					// 메인, 다시하기, 다음단계 팝업 띄우기
-					Intent intent = new Intent(getApplicationContext(), CardGameFinish.class);
-					intent.putExtra(CardGameMain.EXTRA_LEVEL, mLevel);
-					startActivityForResult(intent, ACTIVITY_FINISH);
-
-					// 일단 게임은 끝났으니 해당 액티비티는 종료 시킴
-					// 상위 액티비티도 닫기 위해 플래그를 날림
-//					finish();
-				} else {
-
-					// 한판 클리어
-					// 참 잘했어요! 팝업 띄우기
-					Intent intent = new Intent(getApplicationContext(), CardGameClearPopup.class);
-					startActivityForResult(intent, ACTIVITY_CLEAR_POPUP);
-				}
-			}
 			
 			// 이미 선택된 카드가 2개 있는 경우 선택된 카드들은 다시 뒤집음 - 틀린 경우이기 때문
 			if (getCheckedCardNum() == 2) {
 				flipCheckedCards();
+				// 뒤집는 시간차를 주려고 하는데 아래와 같이 하면 죽는다...
+				/*
+				TimerTask myTask = new TimerTask() {
+					public void run() {
+						// checked 된 카드들 뒤집기
+						flipCheckedCards();
+					}
+				};
+				Timer timer = new Timer();
+				timer.schedule(myTask, 500);
+				*/
 			}
 		}
 
@@ -440,9 +453,11 @@ public class CardGameRun extends Activity {
 				return;
 			}
 
-			// 이미 선택된 카드가 2개 있는 경우 선택된 카드들은 다시 뒤집음
+			// X 이미 선택된 카드가 2개 있는 경우 선택된 카드들은 다시 뒤집음
 			if (getCheckedCardNum() == 2) {
-				flipCheckedCards();
+				return;
+				// timer 에 의해 뒤집히기 전까지 다른 작업을 하지 않는다.
+//				flipCheckedCards();
 			}
 
 			// 선택되지 않은 카드 선택시 카드 뒤집음
@@ -460,13 +475,10 @@ public class CardGameRun extends Activity {
 				Animation mAnimFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
 				// 애니메이션 후처리 리스너 붙이기
 				mAnimFade.setAnimationListener(mCardFlipAnimationListener);
-
+				
 				imageView.startAnimation(mAnimFade);
 				
-//				Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
-//				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
-				
-//				imageView.setImageBitmap(resizedBitmap);
+				// 카드 이미지 보여줌
 				imageView.setImageBitmap(card.getThumbnail());
 			} else {
 				// 이미 선택된 카드 클릭시 아무것도 하지 않음
@@ -480,14 +492,22 @@ public class CardGameRun extends Activity {
 	 * 선택된 카드들 뒤로 뒤집기
 	 */
 	private void flipCheckedCards() {
-
+		
 		for (int i = 0; i < mGameCards.size(); i++) {
 			if (mGameCards.get(i).isChecked()) {
 				View view = mGameCards.get(i).getView();
 
 				// 선택된 카드 다시 뒤집기
 				mGameCards.get(i).setSide(GameCard.SIDE_BACK);
-				view.startAnimation(mAnimFade);
+				
+				// 애니메이션 설정
+				Animation animFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
+				
+				// 뒤로 뒤집기 때문에 후처리는 필요 없음.
+				// 애니메이션 후처리 리스너 붙이기
+//				animFade.setAnimationListener(mCardFlipAnimationListener);
+
+				view.startAnimation(animFade);
 				
 				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, CARD_WIDTH, CARD_HEIGHT, true);
