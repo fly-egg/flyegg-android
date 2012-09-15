@@ -1,38 +1,48 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="egg_main_background"
+    android:background="@drawable/egg_main_background"
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/workd_card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="300dip"
-        android:text="@string/main_btn_1" />
+        android:id="@+id/btnsmartCard"
+        android:layout_width="332dip"
+        android:layout_height="252dip"
+        android:layout_marginTop="162dip"
+        android:layout_marginLeft="168dip"
+        android:background="@drawable/main_card_01"
+        />
 
     <Button
         android:id="@+id/btnGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dip"
-        android:text="@string/main_btn_2" />
+        android:layout_marginLeft="530dip"
+        android:layout_marginTop="162dip"
+        android:layout_width="332dip"
+        android:layout_height="252dip"
+        android:background="@drawable/main_card_02"
+        />
 
     <Button
         android:id="@+id/btnMirror"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dip"
-        android:text="@string/main_btn_3" />
+        android:layout_marginTop="442dip"
+        android:layout_marginLeft="168dip"
+		android:layout_width="332dip"
+        android:layout_height="252dip"
+        android:background="@drawable/main_card_03"
+        />
     
     <Button
-        android:id="@+id/btntest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dip"
-        android:text="잠깐" />
+        android:id="@+id/btnSelectCard"
+        android:layout_width="332dip"
+        android:layout_height="252dip"
+        android:layout_marginLeft="530dip"
+        android:layout_marginTop="442dip"
+        android:background="@drawable/main_card_04"
+        />
 
+    
+    <!-- 
     <Button
         android:id="@+id/btnAddCard"
         android:layout_width="wrap_content"
@@ -85,5 +95,5 @@
         android:layout_height="wrap_content"
         android:text="@string/copyright" 
         android:textSize="20dip" />
-
-</LinearLayout>
+ -->
+</RelativeLayout>
