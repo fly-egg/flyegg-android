@@ -2,6 +2,7 @@ package kr.flyegg.egg.ui;
 
 import kr.flyegg.egg.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -45,6 +46,12 @@ public class CardGameClearPopup extends Activity {
 	public void onClick(View v) {
 
 		if (v.getId() == R.id.btnNext) {
+			// 다음
+			Intent intent = new Intent();
+			intent.putExtra("NEXT", true);
+			
+			setResult(Activity.RESULT_OK, intent);
+			
 			finish();
 		} else {
 			Toast.makeText(getApplicationContext(), "Wrong", Toast.LENGTH_SHORT).show();

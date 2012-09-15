@@ -17,6 +17,8 @@ import android.widget.Toast;
  */
 public class CardGameMain extends Activity {
 
+	private static final int ACTIVITY_RUN = 1;
+	
 	// Intent request codes
 	private static final int LEVEL_1 = 1;
 	private static final int LEVEL_2 = 2;
@@ -59,7 +61,7 @@ public class CardGameMain extends Activity {
 				intent.putExtra(EXTRA_CATEGORY, category);
 				intent.putExtra(EXTRA_TAG, tag);
 
-				startActivityForResult(intent, 1);
+				startActivityForResult(intent, ACTIVITY_RUN);
 //				startActivity(intent);
 				// startActivityForResult(intent, level);
 			}
@@ -79,12 +81,23 @@ public class CardGameMain extends Activity {
 	}
 
 	/**
-	 * 
+	 * ActivityResult
 	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-		case 1:
-			finish();
+		case ACTIVITY_RUN:
+			if (resultCode == Activity.RESULT_OK){
+				boolean isToMain = data.getBooleanExtra("TO_MAIN", false);
+				if (isToMain) {
+					Intent intent = new Intent();
+					intent.putExtra("TO_MAIN", true);
+					
+					setResult(Activity.RESULT_OK, intent);
+	
+					finish();
+				}
+			}
+
 			break;
 		}
 	}
