@@ -165,7 +165,7 @@ public class MirrorMain extends Activity {
 						if (nTouchPosX < m_nPreTouchPosX) {
 							MoveNextView();
 						} else if (nTouchPosX > m_nPreTouchPosX) {
-							MovewPreviousView();
+							MovePreviousView();
 						}
 					} else {
 						// 터치
@@ -198,19 +198,20 @@ public class MirrorMain extends Activity {
         List<Card> list = cardAccesser.getCardList();
         
         for (Card card : list) {
+        	// 이미지
         	ImageView imageView = new ImageView(this);
 
         	imageView.setTag(card);
         	
 			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
         	imageView.setImageBitmap(bitmap);
-        	imageView.setBackgroundResource(R.drawable.card_background);
+        	imageView.setBackgroundResource(R.drawable.card_front);
         	imageView.setPadding(30,30,30,30);
         	
 			RelativeLayout out = new RelativeLayout(getApplicationContext());
 			out.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			
-			
+			// 단어
 			TextView textView = new TextView(getApplicationContext());
 			textView.setText(card.getWord());
 			textView.setVisibility(View.GONE);
@@ -301,6 +302,28 @@ public class MirrorMain extends Activity {
             
             Log.d(TAG, "Play:" + mVoicePath);
 			Toast.makeText(getApplicationContext(), "Play:" + mVoicePath, Toast.LENGTH_SHORT).show();
+		} else if (v.getId() == R.id.ivLeft) {
+			if (isFirstImage == false) {
+				// 이미 돌아간 경우 역회전 시킴
+				RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+				ImageView imageView = (ImageView)out.getChildAt(0);
+				TextView textView = (TextView)out.getChildAt(1);
+
+				applyRotation(imageView, textView, 0, -90);
+				isFirstImage = !isFirstImage;
+			}
+			MovePreviousView();
+		} else if (v.getId() == R.id.ivRight){
+			if (isFirstImage == false) {
+				// 이미 돌아간 경우 역회전 시킴
+				RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+				ImageView imageView = (ImageView)out.getChildAt(0);
+				TextView textView = (TextView)out.getChildAt(1);
+
+				applyRotation(imageView, textView, 0, -90);
+				isFirstImage = !isFirstImage;
+			}
+			MoveNextView();
 		}
 	}
 
@@ -317,7 +340,7 @@ public class MirrorMain extends Activity {
 		m_viewFlipper.showNext();
     }
     
-    private void MovewPreviousView()
+    private void MovePreviousView()
     {
     	m_viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,	R.anim.appear_from_left));
 		m_viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.disappear_to_right));

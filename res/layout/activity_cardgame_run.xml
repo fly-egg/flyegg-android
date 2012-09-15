@@ -22,15 +22,29 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <TableLayout
-        android:id="@+id/tblGame"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="110dip" >
+        android:orientation="vertical" >
 
-    </TableLayout>
+        <ImageView
+            android:id="@+id/ivTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="100dip"
+            android:layout_marginTop="100dip"
+            android:src="@drawable/info_egg_1" />
+
+        <TableLayout
+            android:id="@+id/tblGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dip" >
+        </TableLayout>
+    </LinearLayout>
 
 </LinearLayout>

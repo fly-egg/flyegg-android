@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +41,19 @@ public class CardGameFinish extends Activity {
 		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
 		tvTitle.setText("메모리 게임 " + mLevel + "단계");
 		
-		TextView tvContratulations = (TextView) findViewById(R.id.tvCongratulations);
-		tvContratulations.setText(mLevel + "단계를 모두 맞췄군요! 참 잘했어요!!");
+		if (mLevel == 1) {
+		findViewById(R.id.layoutBox).setBackgroundResource(R.drawable.step_praise_1);
+		} else if (mLevel == 2) {
+			findViewById(R.id.layoutBox).setBackgroundResource(R.drawable.step_praise_2);
+		} else if (mLevel == 3) {
+			// 마지막 레벨에서 다음 버튼은 숨김
+			findViewById(R.id.layoutBox).setBackgroundResource(R.drawable.step_praise_3);
+			Button btn = (Button)findViewById(R.id.btnNext);
+			btn.setVisibility(View.GONE);
+		}
+		
+//		TextView tvContratulations = (TextView) findViewById(R.id.tvCongratulations);
+//		tvContratulations.setText(mLevel + "단계를 모두 맞췄군요! 참 잘했어요!!");
 	}
 
 	@Override
