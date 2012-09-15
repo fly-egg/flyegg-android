@@ -69,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="95dip"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -76,7 +77,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginTop="5dip"
-            android:background="@drawable/mirrow_button_panel"
             android:orientation="horizontal" >
 
             <Button
@@ -84,16 +84,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:onClick="onClick"
-                android:text="●" />
+                android:background="@drawable/btn_record_start"
+                android:onClick="onClick" />
 
             <Button
                 android:id="@+id/btnVoicePlay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:onClick="onClick"
-                android:text="Play" />
+                android:background="@drawable/btn_play_start"
+                android:onClick="onClick" />
+
         </LinearLayout>
     </LinearLayout>
 

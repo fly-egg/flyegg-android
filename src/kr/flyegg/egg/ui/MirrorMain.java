@@ -36,6 +36,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -123,14 +124,6 @@ public class MirrorMain extends Activity {
 		LayoutInflater inflater = getLayoutInflater();
 		View layout = inflater.inflate(R.layout.activity_mirror_main, null);
 		addContentView(layout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		
-		
-		// 클릭 이벤트
-		OnClickListener levelClickListener = new OnClickListener() {
-
-			public void onClick(View v) {
-			}
-		};
 		
 		
 		// ------------------------------------------
@@ -264,26 +257,35 @@ public class MirrorMain extends Activity {
 	public void onClick(View v) {
 		if (v.getId() == R.id.btnVoiceRecord) {
 			if (recordToggle == false) {
-				Toast.makeText(getApplicationContext(), "Record Start:" + mVoicePath, Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(), "Record Start:" + mVoicePath, Toast.LENGTH_SHORT).show();
 				Log.d(TAG, "Record Start:" + mVoicePath);
 
 				try {
+					mAudioRecorder = new AudioRecorder(mVoicePath);
 					mAudioRecorder.start();
+
+					Button btn = (Button) findViewById(R.id.btnVoiceRecord);
+					btn.setBackgroundResource(R.drawable.btn_record_stop);
+					recordToggle = true;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				recordToggle = true;
+
 			} else {
-				Toast.makeText(getApplicationContext(), "Record Stop", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(), "Record Stop", Toast.LENGTH_SHORT).show();
 				Log.d(TAG, "Record Stop");
 				try {
 					mAudioRecorder.stop();
+					mAudioRecorder = null;
+
+					Button btn = (Button) findViewById(R.id.btnVoiceRecord);
+					btn.setBackgroundResource(R.drawable.btn_record_start);
+					recordToggle = false;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				recordToggle = false;
 			}
 
 		} else if (v.getId() == R.id.btnVoicePlay) {
@@ -301,7 +303,7 @@ public class MirrorMain extends Activity {
             mediaPlayer.start();
             
             Log.d(TAG, "Play:" + mVoicePath);
-			Toast.makeText(getApplicationContext(), "Play:" + mVoicePath, Toast.LENGTH_SHORT).show();
+//			Toast.makeText(getApplicationContext(), "Play:" + mVoicePath, Toast.LENGTH_SHORT).show();
 		} else if (v.getId() == R.id.ivLeft) {
 			if (isFirstImage == false) {
 				// 이미 돌아간 경우 역회전 시킴
