@@ -5,18 +5,21 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="100dip"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:layout_width="match_parent"
+        android:layout_height="44dip"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/bar_tab"
+        android:orientation="vertical"
+        android:paddingTop="10sp" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="나는야 암기王"
-            android:textSize="35sp" />
+            android:layout_gravity="center_horizontal"
+            android:text="짝꿍카드"
+            android:textColor="#cccccc"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -25,65 +28,101 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal" >
 
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="50dip"
+            android:layout_marginTop="50dip"
+            android:text="짝꿍카드 단계고르기"
+            android:textColor="#2d2d2d"
+            android:textSize="48sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dip"
+        android:orientation="horizontal" >
+
         <Button
             android:id="@+id/btnGameEasy"
-            android:layout_width="300dip"
-            android:layout_height="80dip"
-            android:text="1단계"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dip"
+            android:background="@drawable/card_step1"
             android:textSize="30sp" />
 
         <Button
             android:id="@+id/btnGameNormal"
-            android:layout_width="300dip"
-            android:layout_height="80dip"
-            android:text="2단계"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dip"
+            android:background="@drawable/card_step2"
             android:textSize="30sp" />
 
         <Button
             android:id="@+id/btnGameHard"
-            android:layout_width="300dip"
-            android:layout_height="80dip"
-            android:text="3단계"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_step3"
             android:textSize="30sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="100dip"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/textView1"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="과일야채 > 의성어 SET 선택 中 "
-            android:textSize="35sp" />
-        
-        <Button
-            android:id="@+id/btnChangeCardSet"
-            android:layout_width="300dip"
-            android:layout_height="80dip"
-            android:text="변경"
-            android:onClick="onClick"
-            android:textSize="30sp" />
-        
-    </LinearLayout>
+            android:layout_gravity="top"
+            android:layout_marginBottom="20dip"
+            android:orientation="horizontal" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="100dip"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal" >
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_right"
+                android:paddingLeft="10sp"
+                android:text="과일야채 > 의성어 SET 선택 中 "
+                android:textColor="#4d4d4d"
+                android:textSize="25sp" />
 
-        <TextView
-            android:id="@+id/textView1"
+            <Button
+                android:id="@+id/btnChangeCardSet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_change"
+                android:onClick="onClick" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="변경을 누르면 SET 변경화면으로 이동합니다."
-            android:textSize="35sp" />
+            android:layout_gravity="right"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/ivAddImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_info" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="변경을 누르면 SET 변경화면으로 이동합니다."
+                android:textColor="#412c0f"
+                android:textSize="18sp" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
