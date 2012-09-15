@@ -62,9 +62,19 @@
             android:name=".ui.CardBoard"
             android:screenOrientation="landscape" />
 
+        <!-- 일단 안씀. 나중에 정리할 예정
 		<activity
             android:name=".ui.tabview.PlusActivity"
             android:theme="@android:style/Theme.Translucent"
+            android:screenOrientation="landscape" />
+		 -->
+		 
+		<activity
+            android:name=".ui.tabview.TabViewActivity"
+            android:screenOrientation="landscape" />
+		
+		<activity
+            android:name=".ui.tabview.AllOfAllActivity"
             android:screenOrientation="landscape" />
         
     </application>
