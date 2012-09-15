@@ -14,6 +14,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -30,11 +33,16 @@ import android.widget.Toast;
 public class CardGameRun extends Activity {
 
 	private static final String TAG = "CardGameRun";
+	
+	private static final int ACTIVITY_CLEAR_POPUP = 1;
+	private static final int ACTIVITY_FINISH = 2;
+	
+	private Animation mAnimFade;	// 카드뒤집기 페이드 애니메이션
 
 	// ------------------------
 	// 판수 변수들
-	private static int stageNow = 1; // 현재 판수
-	private final int stageTotal = 3; // 전체 판수
+	private static int mStageNow = 1; // 현재 판수
+	private final int TOTAL_STAGE = 3; // 전체 판수
 
 	// ------------------------
 	// 게임카드 변수들
@@ -44,6 +52,8 @@ public class CardGameRun extends Activity {
 	// ------------------------
 	// DB의 카드 정보 가져오기 위한 변수들
 	private int mLevel;	// 인자로 받은 레벨
+	private final int MAX_LEVEL = 3; // 마지막 레벨
+	
 	private String mCategory;	// 인자로 받은 카테고리
 	private String mTag;	// 인자로 받은 테그
 
@@ -55,18 +65,24 @@ public class CardGameRun extends Activity {
 		super.onCreate(savedInstanceState);
 
 		// ------------------------
+		// 애니메이션 설정
+		mAnimFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
+		// 애니메이션 후처리 리스너 붙이기
+		mAnimFade.setAnimationListener(mCardFlipAnimationListener);
+
+		// ------------------------
 		// 화면 설정
 		setContentView(R.layout.activity_cardgame_run);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		// ------------------------
 		// 게임 횟수 초기화
-		stageNow = 1;
+		mStageNow = 1;
 
 		Intent intent = getIntent();
 		// ------------------------
 		// 카테고리, 테그 정보 받아 오기
-		mCategory = intent.getStringExtra(CardGameMain.EXTRA_LEVEL);
+		mCategory = intent.getStringExtra(CardGameMain.EXTRA_CATEGORY);
 		mTag = intent.getStringExtra(CardGameMain.EXTRA_TAG);
 		
 		// ------------------------
@@ -75,13 +91,7 @@ public class CardGameRun extends Activity {
 
 		Log.d(TAG, "Level:" + mLevel);
 
-		if (mLevel == 1) {
-			pairs = 2;
-		} else if (mLevel == 2) {
-			pairs = 3;
-		} else if (mLevel == 3) {
-			pairs = 4;
-		}
+		pairs = getPairs(mLevel);
 		
 		// ------------------------
 		// TODO: DB에서 카드 정보 가져 오기 (parameter: 카테고리, SET)
@@ -100,6 +110,23 @@ public class CardGameRun extends Activity {
 		drawGameTable(pairs);
 
 		Log.d(TAG, "OnCreate Done");
+	}
+
+	/**
+	 * 레벨에 따른 카드 pairs 구하기
+	 * @param mLevel
+	 * @return
+	 */
+	private int getPairs(int mLevel) {
+		int pairs = 0;
+		if (mLevel == 1) {
+			pairs = 2;
+		} else if (mLevel == 2) {
+			pairs = 3;
+		} else if (mLevel == 3) {
+			pairs = 4;
+		}
+		return pairs;
 	}
 
 	@Override
@@ -193,7 +220,7 @@ public class CardGameRun extends Activity {
 		// ------------------------
 		// 타이틀 변경하기
 		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
-		tvTitle.setText("메모리 게임 " + mLevel + "단계 " + stageNow + "/" + stageTotal);
+		tvTitle.setText("메모리 게임 " + mLevel + "단계 " + mStageNow + "/" + TOTAL_STAGE);
 
 		Log.d(TAG, "DrawTable start");
 
@@ -270,7 +297,7 @@ public class CardGameRun extends Activity {
 				// Create a Button to be the row-content
 				Log.d(TAG, "Create a button");
 				Button btn = new Button(this);
-
+				
 				// 카드 정보
 				GameCard gameCard = new GameCard();
 				gameCard.setSide(GameCard.SIDE_BACK); // 카드는 기본적으로 뒷면을 향함
@@ -311,6 +338,87 @@ public class CardGameRun extends Activity {
 		}
 	}
 
+	AnimationListener mCardFlipAnimationListener = new AnimationListener() {
+
+		public void onAnimationEnd(Animation arg0) {
+			// 카드가 뒤집히고 나면 후처리를 함.
+			afterFlip();
+		}
+
+		/**
+		 * 카드가 뒤집히고 나면 후처리 함.
+		 */
+		private void afterFlip() {
+			// 두개 선택되어 있는 경우 맞는지 틀린지 검사
+			if (getCheckedCardNum() == 2) {
+				int preCheckedCardIndex = -1; // 선택된 카드 index
+
+				for (int i = 0; i < mGameCards.size(); i++) {
+					if (mGameCards.get(i).isChecked()) {
+						if (preCheckedCardIndex == -1) {
+							preCheckedCardIndex = i;
+							continue;
+						}
+
+						// 이전 선택 카드 번호와 지금 선택 카드 번호가 같으면 맞음
+						if (mGameCards.get(preCheckedCardIndex).getCardNo() == mGameCards.get(i).getCardNo()) {
+							
+							mGameCards.get(preCheckedCardIndex).setSolved(true);
+							mGameCards.get(i).setSolved(true);
+
+							// 선택 해제
+							mGameCards.get(preCheckedCardIndex).setChecked(false);
+							mGameCards.get(i).setChecked(false);
+
+							// Toast.makeText(getApplicationContext(), "짝짝짝", Toast.LENGTH_SHORT).show();
+							break;
+						}
+					}
+				}
+			} // end if 두개 선택시 맞는지 틀린지 검사
+			
+			// 전부 해결
+			if (isAllSolved()) {
+
+				// 스테이지를 다음으로 넘김
+				mStageNow++;
+				
+				if (mStageNow > TOTAL_STAGE) {
+					// 할당된 게임 모두 클리어 (ex. 3판)
+					// 메인, 다시하기, 다음단계 팝업 띄우기
+					Intent intent = new Intent(getApplicationContext(), CardGameFinish.class);
+					intent.putExtra(CardGameMain.EXTRA_LEVEL, mLevel);
+					startActivityForResult(intent, ACTIVITY_FINISH);
+
+					// 일단 게임은 끝났으니 해당 액티비티는 종료 시킴
+					// 상위 액티비티도 닫기 위해 플래그를 날림
+//					finish();
+				} else {
+
+					// 한판 클리어
+					// 참 잘했어요! 팝업 띄우기
+					Intent intent = new Intent(getApplicationContext(), CardGameClearPopup.class);
+					startActivityForResult(intent, ACTIVITY_CLEAR_POPUP);
+				}
+			}
+			
+			// 이미 선택된 카드가 2개 있는 경우 선택된 카드들은 다시 뒤집음 - 틀린 경우이기 때문
+			if (getCheckedCardNum() == 2) {
+				flipCheckedCards();
+			}
+		}
+
+		public void onAnimationRepeat(Animation arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onAnimationStart(Animation arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
 	// 카드 클릭 처리
 	private OnClickListener cardClickListener = new OnClickListener() {
 
@@ -330,17 +438,7 @@ public class CardGameRun extends Activity {
 
 			// 이미 선택된 카드가 2개 있는 경우 선택된 카드들은 다시 뒤집음
 			if (getCheckedCardNum() == 2) {
-
-				for (int i = 0; i < mGameCards.size(); i++) {
-					if (mGameCards.get(i).isChecked()) {
-						// 선택된 카드 다시 뒤집기
-						mGameCards.get(i).setSide(GameCard.SIDE_BACK);
-						mGameCards.get(i).getView().setBackgroundResource(R.drawable.ic_launcher);
-//						((Button) mGameCards.get(i).getView()).setText("");
-
-						mGameCards.get(i).setChecked(false);
-					}
-				}
+				flipCheckedCards();
 			}
 
 			// 선택되지 않은 카드 선택시 카드 뒤집음
@@ -348,70 +446,91 @@ public class CardGameRun extends Activity {
 				gameCard.setSide(GameCard.SIDE_FRONT);
 				gameCard.setChecked(true); // 선택처리
 
-//				((Button) v).setText("no:" + gameCard.getCardNo());
 				Card card = gameCard.getCard();
 				
 				// TODO: 실제 이미지인 경우에 대한 처리 필요
 				//v.setBackgroundDrawable(background) 로 해야 되나?
+
+				v.startAnimation(mAnimFade);
 				v.setBackgroundResource(Integer.parseInt(card.getImgPath()));
 			} else {
 				// 이미 선택된 카드 클릭시 아무것도 하지 않음
 				return;
 			}
+		}
+	};
 
-			// 두개 선택되어 있는 경우 맞는지 틀린지 검사
-			if (getCheckedCardNum() == 2) {
-				int preCheckedCardIndex = -1; // 선택된 카드 index
+	/**
+	 * 선택된 카드들 뒤로 뒤집기
+	 */
+	private void flipCheckedCards() {
+		/*
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		*/
 
-				for (int i = 0; i < mGameCards.size(); i++) {
-					if (mGameCards.get(i).isChecked()) {
-						if (preCheckedCardIndex == -1) {
-							preCheckedCardIndex = i;
-							continue;
-						}
+		for (int i = 0; i < mGameCards.size(); i++) {
+			if (mGameCards.get(i).isChecked()) {
+				View view = mGameCards.get(i).getView();
 
-						// 이전 선택 카드 번호와 지금 선택 카드 번호가 같으면 맞음
-						if (mGameCards.get(preCheckedCardIndex).getCardNo() == mGameCards.get(i).getCardNo()) {
-							mGameCards.get(preCheckedCardIndex).setSolved(true);
-							mGameCards.get(i).setSolved(true);
+				// 선택된 카드 다시 뒤집기
+				mGameCards.get(i).setSide(GameCard.SIDE_BACK);
+				view.startAnimation(mAnimFade);
+				view.setBackgroundResource(R.drawable.ic_launcher);	// 카드 뒷면 사진으로 교체
 
-							// 선택 해제
-							mGameCards.get(preCheckedCardIndex).setChecked(false);
-							mGameCards.get(i).setChecked(false);
-
-							// Toast.makeText(getApplicationContext(), "짝짝짝", Toast.LENGTH_SHORT).show();
-							break;
-						}
-					}
-				}
-			} // end if 두개 선택시 맞는지 틀린지 검사
-
-			// 전부 해결
-			if (isAllSolved()) {
-
-				// 스테이지를 다음으로 넘김
-				stageNow++;
+				mGameCards.get(i).setChecked(false);
+			}
+		}
+	}
+	/**
+	 * ActivityResult
+	 */
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case ACTIVITY_CLEAR_POPUP:
+			if (resultCode == Activity.RESULT_OK) {
+				// 판 다시 그리기
+				drawGameTable(pairs);
+			}
+			break;
+		case ACTIVITY_FINISH:
+			if (resultCode == Activity.RESULT_OK){
+				boolean isToMain = data.getBooleanExtra("TO_MAIN", false);
+				boolean isRetry = data.getBooleanExtra("RETRY", false);
+				boolean isNext = data.getBooleanExtra("NEXT", false);
 				
-				if (stageNow > stageTotal) {
-					// 메인, 다시하기, 다음단계 팝업 띄우기
-					Intent intent = new Intent(getApplicationContext(), CardGameFinish.class);
-					startActivity(intent);
+				// 스테이지 초기화
+				mStageNow = 1;
+				
+				if (isToMain) {
+					Intent intent = new Intent();
+					intent.putExtra("TO_MAIN", true);
+					
+					setResult(Activity.RESULT_OK, intent);
 
-					// 일단 게임은 끝났으니 해당 액티비티는 종료 시킴
-					// 상위 액티비티도 닫기 위해 플래그를 날림
 					finish();
-				} else {
-					// 참 잘했어요! 팝업 띄우기
-					Intent intent = new Intent(getApplicationContext(), CardGameClearPopup.class);
-					startActivity(intent);
+				} else if (isRetry) {
+					// 판 다시 그리기
+					drawGameTable(pairs);
+				} else if (isNext) {
+					if (mLevel < MAX_LEVEL) {
+						mLevel++;
+						pairs = getPairs(mLevel);
+					} else {
+						// TODO: 이미 마지막 레벨인 경우?
+						// 그냥 마지막 레벨을 계속 한다?
+						// 종료 한다?
+					}
 					
 					// 판 다시 그리기
 					drawGameTable(pairs);
 				}
 			}
-
+			
+			break;
 		}
-
-	};
-
+	}
 }

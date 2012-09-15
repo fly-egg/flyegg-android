@@ -20,7 +20,7 @@
         android:src="@drawable/chick" />
 
     <TextView
-        android:id="@+id/tvCardName"
+        android:id="@+id/tvCongratulations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -28,8 +28,9 @@
         android:textSize="25sp" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
         android:orientation="horizontal" >
 
         <Button
