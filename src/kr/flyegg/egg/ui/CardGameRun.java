@@ -331,6 +331,7 @@ public class CardGameRun extends Activity {
 				gameCard.setSide(GameCard.SIDE_BACK); // 카드는 기본적으로 뒷면을 향함
 				
 				imageView.setImageBitmap(mCardBackSideBitmap);	// 뒷면 이미지
+				imageView.setPadding(9, 9, 9, 9);
 
 				// 카드 번호 지정
 				gameCard.setCardNo(cardsList.get(0));
