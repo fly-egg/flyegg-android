@@ -20,7 +20,6 @@ public class DBColumns implements BaseColumns {
 	public static final String CARD_TABLE 	= "CARD";//table name
 	public static String CARD_ID 			= "_id";
 	public static String CARD_WORD			= "word";
-//	public static String CARD_TYPE 			= "CARDType";
 	public static String CARD_IMGPATH		= "imgpath";
 	public static String CARD_CATEGORY 		= "category";
 	public static String CARD_TAGS	 		= "tags";
@@ -30,7 +29,7 @@ public class DBColumns implements BaseColumns {
 	
 	public static final Uri CATEGORY_URI		= Uri.parse("content://" + AUTHORITY  + "/CATEGORY"); 
 	
-	public static final String CATEGORY_TABLE 	= "category";//table name
+	public static final String CATEGORY_TABLE 	= "CATEGORY";//table name
 	public static String CATEGORY_ID 			= "_id";
 	public static String CATEGORY_NAME			= "name";
 	public static String CATEGORY_CREATEDDATE 	= "createdDate";
