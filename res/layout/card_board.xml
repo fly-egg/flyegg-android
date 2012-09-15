@@ -3,6 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+    
+	<TextView 
+        android:layout_width="match_parent"
+    	android:layout_height="58dip"
+    	android:gravity="center"
+    	android:text="카드 SET 선택"
+    	android:background="@drawable/bar_tab"
+    	android:textSize="16dip"
+    	android:textColor="#ffffff"
+        />
 <!-- 
     <TextView
         android:layout_width="fill_parent"
