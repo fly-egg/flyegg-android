@@ -393,16 +393,21 @@ public class CardGameRun extends Activity {
 				stageNow++;
 				
 				if (stageNow > stageTotal) {
-					// TODO: n단계를 모두 맞췄군요 팝업 띄우기
-					// 메인, 다시하기, 다음단계
-					Toast.makeText(getApplicationContext(), "우왕 굳! ㅋ Level Clear!", Toast.LENGTH_SHORT).show();
+					// 메인, 다시하기, 다음단계 팝업 띄우기
+					Intent intent = new Intent(getApplicationContext(), CardGameFinish.class);
+					startActivity(intent);
+
+					// 일단 게임은 끝났으니 해당 액티비티는 종료 시킴
+					// 상위 액티비티도 닫기 위해 플래그를 날림
 					finish();
 				} else {
-					// TODO: 참 잘 했어요 띄우기... Custom Popup?
-					Toast.makeText(getApplicationContext(), "우왕 굳! ㅋ Clear!", Toast.LENGTH_SHORT).show();
+					// 참 잘했어요! 팝업 띄우기
+					Intent intent = new Intent(getApplicationContext(), CardGameClearPopup.class);
+					startActivity(intent);
+					
+					// 판 다시 그리기
 					drawGameTable(pairs);
 				}
-				
 			}
 
 		}
