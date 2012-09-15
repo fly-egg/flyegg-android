@@ -7,6 +7,7 @@ import kr.flyegg.egg.dao.CardAccesser;
 import kr.flyegg.egg.dao.db.FlyEggDBHelper;
 import kr.flyegg.egg.ui.CardBoard;
 import kr.flyegg.egg.ui.CardGameMain;
+import kr.flyegg.egg.ui.CardSlideFilpper;
 import kr.flyegg.egg.ui.MirrorMain;
 import android.app.Activity;
 import android.content.Intent;
@@ -54,8 +55,24 @@ public class MainActivity extends Activity {
 				callMirrorActivity();
 			}
 		});
+        
+        Button bt2 = (Button) findViewById(R.id.btntest);
+        bt2.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				test();
+			}
+		});
+        
+        
         createDB();
     }
+    
+    private void test() {
+    	Intent i = new Intent(getApplicationContext(), CardSlideFilpper.class);
+    	startActivity(i);
+    }
+    
     
 	private void createDB() {
 		FlyEggDBHelper helper = new FlyEggDBHelper(getApplicationContext());
