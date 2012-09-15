@@ -24,6 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dip"
         android:text="@string/main_btn_3" />
+    
+    <Button
+        android:id="@+id/btntest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dip"
+        android:text="잠깐" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
