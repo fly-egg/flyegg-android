@@ -3,6 +3,12 @@ package kr.flyegg.egg.cardgame;
 import kr.flyegg.egg.dao.Card;
 import android.view.View;
 
+/**
+ * 게임용 카드 객체
+ * 
+ * @author junho85
+ *
+ */
 public class GameCard {
 
 	public static final String SIDE_FRONT = "front";

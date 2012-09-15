@@ -49,6 +49,13 @@
             android:name=".ui.CardGameRun"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".ui.CardGameFinish"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.CardGameClearPopup"
+            android:theme="@android:style/Theme.Translucent"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".ui.MirrorMain"
             android:screenOrientation="landscape" />
         <activity

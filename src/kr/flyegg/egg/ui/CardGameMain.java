@@ -59,7 +59,8 @@ public class CardGameMain extends Activity {
 				intent.putExtra(EXTRA_CATEGORY, category);
 				intent.putExtra(EXTRA_TAG, tag);
 
-				startActivity(intent);
+				startActivityForResult(intent, 1);
+//				startActivity(intent);
 				// startActivityForResult(intent, level);
 			}
 		};
@@ -77,4 +78,14 @@ public class CardGameMain extends Activity {
 		super.onDestroy();
 	}
 
+	/**
+	 * 
+	 */
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case 1:
+			finish();
+			break;
+		}
+	}
 }
