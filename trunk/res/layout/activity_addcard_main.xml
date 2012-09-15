@@ -6,78 +6,145 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dip"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/bar_tab"
+        android:orientation="vertical"
+        android:paddingTop="10sp" >
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="카드 만들기"
+            android:textColor="#cccccc"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginBottom="20dip"
+        android:layout_marginRight="46dip"
+        android:layout_marginTop="30dip"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="분류"
-            android:textSize="25sp" />
+            android:layout_gravity="center_vertical"
+            android:text="카테고리"
+            android:textColor="#2d2d2d"
+            android:textSize="20sp" />
 
         <Spinner
             android:id="@+id/spinnerCategory"
-            android:layout_width="300dip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             />
+            android:layout_gravity="center_vertical|center_horizontal|center"
+            android:layout_marginLeft="10dip"
+            android:padding="14sp"
+            android:background="@drawable/box_category2" />
 
-        <Button
+        <!--
+             Button
             android:id="@+id/btnAddCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+" />
+            android:text="+" /
+        -->
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/ivAddImage"
-        android:layout_width="300dip"
-        android:layout_height="300dip"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/chick" />
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginBottom="25dip"
+        android:background="@drawable/card_background"
         android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/btnAddCardFromGallery"
-            android:layout_width="250dip"
-            android:layout_height="wrap_content"
-            android:text="라이브러리에서 선택" />
-
-        <Button
-            android:id="@+id/btnAddCardFromCamera"
-            android:layout_width="250dip"
-            android:layout_height="wrap_content"
-            android:text="촬영" />
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/ivAddImage"
+            android:layout_width="318dip"
+            android:layout_height="234dip"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:src="@drawable/card_image" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dip"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnAddCardFromGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dip"
+                android:background="@drawable/btn_album" />
+
+            <Button
+                android:id="@+id/btnAddCardFromCamera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_shoot" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvCardName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="*가로로 촬영해 주세요."
+            android:textColor="#462f11"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginBottom="20dip"
+        android:layout_marginRight="46dip"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/tvCardName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="카드명"
-            android:textSize="25sp" />
+            android:layout_gravity="center_vertical"
+            android:text="카드이름"
+            android:textColor="#2d2d2d"
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/txtCardName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
             android:layout_weight="1"
-            android:ems="10" >
+            android:background="@drawable/box_name"
+            android:ellipsize="end"
+            android:ems="10"
+            android:maxLines="1"
+            android:padding="14sp"
+            android:singleLine="true"
+            android:textColor="#2d2d2d"
+            android:textSize="22sp" >
 
-            <!-- requestFocus /-->
+            <!-- requestFocus / -->
         </EditText>
     </LinearLayout>
 
@@ -89,15 +156,16 @@
 
         <Button
             android:id="@+id/btnOK"
-            android:layout_width="300dip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="완료" />
+            android:layout_marginRight="8dip"
+            android:background="@drawable/btn_success" />
 
         <Button
             android:id="@+id/btnCancel"
-            android:layout_width="300dip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="취소" />
+            android:background="@drawable/btn_cancel" />
     </LinearLayout>
 
 </LinearLayout>
