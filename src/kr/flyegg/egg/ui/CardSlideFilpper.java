@@ -5,9 +5,11 @@ import kr.flyegg.egg.ui.event.DisplayNextView;
 import kr.flyegg.egg.ui.event.Flip3dAnimation;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateInterpolator;
@@ -25,17 +27,38 @@ public class CardSlideFilpper extends Activity {
 	
 	private int m_nPreTouchPosX = 0;
 	
+	
+	private final Integer[] mImageIds = {
+            R.drawable.banana,
+            R.drawable.grape,
+            R.drawable.kiwi,
+            R.drawable.pineapp,
+            R.drawable.watermelon
+    };
+	
+    private final String[] mStrIds = {
+            "바나나",
+            "포도",
+            "키위",
+            "파인애플",
+            "수박"
+    };
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	requestWindowFeature(Window.FEATURE_NO_TITLE);
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_slide);
         
         
         m_viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         
-		setUI("저리가", R.drawable.gallery_photo_2);
-		setUI("안녕", R.drawable.gallery_photo_3);
-		setUI("123", R.drawable.gallery_photo_4);
+		setUI(mStrIds[0], mImageIds[0]);
+		setUI(mStrIds[1], mImageIds[1]);
+		setUI(mStrIds[2], mImageIds[2]);
+		setUI(mStrIds[3], mImageIds[3]);
+		setUI(mStrIds[4], mImageIds[4]);
 		
 		Button bt1 = (Button) findViewById(R.id.left);
 		bt1.setOnClickListener(new OnClickListener() {
@@ -154,7 +177,11 @@ public class CardSlideFilpper extends Activity {
 		image1.setImageResource(img_id);
 		
 		final TextView tv = new TextView(getApplicationContext());
+		tv.setBackgroundResource(R.drawable.card_back);
 		tv.setText(str);
+		tv.setTextSize(140);
+		tv.setTextColor(R.color.card_name_gray);
+		tv.setGravity(Gravity.CENTER);
 		tv.setVisibility(View.GONE);
 	
 		image1.setOnClickListener(new View.OnClickListener() {
