@@ -15,10 +15,9 @@
 	    android:id="@+id/category_name"
         android:layout_width="fill_parent"
     	android:layout_height="58dip"
-    	android:background="@drawable/bar_tab"
-    	android:text=""
+    	android:layout_marginLeft="10dip"
+    	android:text="과일 분류"
     	android:textSize="16dip"
-    	android:textColor="#ffffff"
         />
 	
 	<LinearLayout 
