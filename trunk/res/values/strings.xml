@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="app_name">Egg</string>
+    <string name="app_name">Egg카드</string>
     <string name="main_ment">특별한 앱</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Egg카드</string>
     
     <string name="main_btn_1">특별한 낱말카드</string>
     <string name="main_btn_2">나는야 암기왕</string>
@@ -17,7 +17,9 @@
 	<string name="no">취소</string>
 	
 	<string name="all_tab">전체</string> 
-	<string name="plus">+</string>
+	<string name="plus"> + </string>
 	
-	<string name="alert_dialog_text_entry">이름지어봐</string>
+	<string name="alert_dialog_text_entry">카드분류를 추가하시겠습니까?</string>
+	
+	<string name="category_name">과일야채 초급 SET</string>
 </resources>

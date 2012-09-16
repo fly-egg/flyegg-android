@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_android"
     android:orientation="vertical" >
 
     <LinearLayout 
@@ -14,8 +15,7 @@
 			android:id="@+id/scroll_view"
 			android:layout_width="1000dip"
 			android:layout_height="wrap_content" >
-					
-			<LinearLayout
+							<LinearLayout
 			    android:id="@+id/child"
 			    android:layout_width="wrap_content"
 			    android:layout_height="match_parent"
@@ -61,21 +61,17 @@
 		    android:padding="3dip" />
 
 	</LinearLayout>
-
-    
-    
-		    <GridView
-		        android:id="@+id/myGrid"
-		        android:layout_width="fill_parent"
-		        android:layout_height="fill_parent"
-		        android:columnWidth="1280dip"
-		        android:gravity="center"
-		        android:horizontalSpacing="10dp"
-		        android:numColumns="auto_fit"
-		        android:padding="10dp"
-		        android:stretchMode="columnWidth"
-		        android:verticalSpacing="10dp" />
-		    
-		    
-		    
+	
+    <GridView
+        android:id="@+id/myGrid"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:columnWidth="1280dip"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="auto_fit"
+        android:padding="10dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
+	    
 </LinearLayout>
