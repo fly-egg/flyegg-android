@@ -1,38 +1,65 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/left"
-		android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="left"
+	<TextView 
+        android:layout_width="fill_parent"
+    	android:layout_height="58dip"
+    	android:background="@drawable/bar_tab"
+    	android:textSize="16dip"
+    	android:textColor="#ffffff"
         />
-    
-	<ViewFlipper
-		android:id="@+id/viewFlipper"  
-	    android:layout_width="200dip" 
-	    android:layout_height="fill_parent">
-     <!-- 
-    <ImageView 
-        android:id="@+id/image_flip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-    
-    <TextView
-        android:id="@+id/text_flip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-		/>
-     -->
-    </ViewFlipper>
         
-    <Button
-        android:id="@+id/right"
-		android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="right"
+	<TextView 
+	    android:id="@+id/category_name"
+        android:layout_width="fill_parent"
+    	android:layout_height="58dip"
+    	android:background="@drawable/bar_tab"
+    	android:text=""
+    	android:textSize="16dip"
+    	android:textColor="#ffffff"
         />
+	
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:gravity="center"
+	    android:orientation="horizontal" 
+	    >
+	    <Button
+	        android:id="@+id/left"
+			android:layout_width="38dip"
+	        android:layout_height="54dip"
+	        android:layout_marginRight="70dip"
+	        android:background="@drawable/btn_left"
+	        />
+	    
+		<ViewFlipper
+			android:id="@+id/viewFlipper"  
+		    android:layout_width="640dip" 
+		    android:layout_height="480dip">
+	     <!-- 
+	    <ImageView 
+	        android:id="@+id/image_flip"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        />
+	    
+	    <TextView
+	        android:id="@+id/text_flip"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			/>
+	     -->
+	    </ViewFlipper>
+	        
+	    <Button
+	        android:id="@+id/right"
+			android:layout_width="38dip"
+	        android:layout_height="54dip"
+	        android:layout_marginLeft="70dip"
+	        android:background="@drawable/btn_right"
+	        />
+    </LinearLayout>
 </LinearLayout>
