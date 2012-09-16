@@ -9,6 +9,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="5dip"
+	    android:background="#9b9894"
 	    android:orientation="horizontal" >
     
 		<HorizontalScrollView
@@ -25,15 +26,27 @@
 			        android:id="@+id/tags_all"
 					android:layout_width="150dip"
 					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dip"
 					android:textColor="#251806"
-					android:drawablePadding="4dp"
 					android:textSize="16dip"
 					android:text="전체"
+					/>
+	           
+	           	<Button
+			        android:id="@+id/tags_all"
+					android:layout_width="150dip"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dip"
+					android:drawableLeft="@drawable/tag_04"
+					android:textColor="#251806"
+					android:textSize="16dip"
+					android:text="계절"
 					/>
 	           
 	           <Button
 			        android:id="@+id/tags_plus"
 					android:layout_width="50dip"
+					android:layout_marginLeft="10dip"
 					android:layout_height="wrap_content"
 					android:textColor="#251806"
 					android:drawablePadding="4dp"
