@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -67,11 +68,11 @@ public class AllOfAllActivity extends Activity {
             	
                 tv = new TextView(getApplicationContext());
                 tv.setTextSize(50);
-                tv.setPadding(0, 480, 0, 0);
+                tv.setPadding(0, 400, 0, 0);
                 
                 i = new ImageView(AllOfAllActivity.this);
                 i.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                i.setLayoutParams(new ViewGroup.LayoutParams(500, 480));
+                i.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
                 l = new CheckableLayout(AllOfAllActivity.this);
                 l.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT,
                         GridView.LayoutParams.WRAP_CONTENT));
