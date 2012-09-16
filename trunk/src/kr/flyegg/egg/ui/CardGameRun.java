@@ -61,7 +61,7 @@ public class CardGameRun extends Activity {
 	// ------------------------
 	// 게임카드 변수들
 	private int pairs = 0; // 카드 짝수 (2짝이면 4장, 3짝이면 6장, 4짝이면 8장이 된다.)
-	private ArrayList<GameCard> mGameCards = new ArrayList<GameCard>(); // 게임용 카드 리스트
+	private ArrayList<GameCard> mGameCardList = new ArrayList<GameCard>(); // 게임용 카드 리스트
 
 	// ------------------------
 	// DB의 카드 정보 가져오기 위한 변수들
@@ -158,7 +158,6 @@ public class CardGameRun extends Activity {
 	
 	/**
 	 * DB에서 카드 리스트 가져 오기
-	 * TODO: 임시로 사용함. 실제 DB 쪽 가져 오는거 나오면 그거 쓰면 됨.
 	 * @param category
 	 * @param tag
 	 * @return
@@ -193,8 +192,8 @@ public class CardGameRun extends Activity {
 	 */
 	private int getCheckedCardNum() {
 		int count = 0;
-		for (int i = 0; i < mGameCards.size(); i++) {
-			if (mGameCards.get(i).isChecked()) {
+		for (int i = 0; i < mGameCardList.size(); i++) {
+			if (mGameCardList.get(i).isChecked()) {
 				count++;
 			}
 		}
@@ -207,8 +206,8 @@ public class CardGameRun extends Activity {
 	 * @return
 	 */
 	private boolean isAllSolved() {
-		for (int i = 0; i < mGameCards.size(); i++) {
-			if (mGameCards.get(i).isSolved() == false) {
+		for (int i = 0; i < mGameCardList.size(); i++) {
+			if (mGameCardList.get(i).isSolved() == false) {
 				return false;
 			}
 		}
@@ -262,8 +261,8 @@ public class CardGameRun extends Activity {
 		
 		
 		// ------------------------
-		// card list 생성
-		// TODO: 카드 이미지의 아이디? 파일명?
+		// card 번호 list 생성
+		// 이 번호로 mGameCards 를 생성하며 해당 뷰와 연결 시킴
 		
 		ArrayList<Integer> cardsList = new ArrayList<Integer>();
 		for (int i = 0; i < pair; i++) {
@@ -294,7 +293,7 @@ public class CardGameRun extends Activity {
 
 		// clear table view and cards
 		tableLayout.removeAllViews();
-		mGameCards.clear();
+		mGameCardList.clear();
 		
 		// DB Card ArrayList Random Shuffle
 		long seed = System.nanoTime();
@@ -349,8 +348,8 @@ public class CardGameRun extends Activity {
 				gameCard.setCard(mCardsListFromDB.get(gameCard.getCardNo()));
 				cardNo++;
 
-				gameCard.setView(imageView);
-				mGameCards.add(gameCard);
+				gameCard.setView(viewFlipper);
+				mGameCardList.add(gameCard);
 
 				// 사이즈
 				Log.d(TAG, "Set Card Size");
@@ -359,13 +358,10 @@ public class CardGameRun extends Activity {
 				imageView.setLayoutParams(layoutParams);
 				
 				imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				imageView.setOnClickListener(cardClickListener);
+//				imageView.setOnClickListener(cardClickListener);
 				
 				
-//				ImageView imageView2 = new ImageView(getApplicationContext());
-//				imageView2.setImageResource(R.drawable.card_back_2);
-//				imageView2.setPadding(9, 9, 9, 9);
-				
+				// 카드 그림면
 				Card card = gameCard.getCard();
 				ImageView imageView2 = new ImageView(getApplicationContext());
 				imageView2.setImageBitmap(card.getThumbnail());
@@ -374,11 +370,14 @@ public class CardGameRun extends Activity {
 				viewFlipper.addView(imageView);
 				viewFlipper.addView(imageView2);
 
-				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade));
+//				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade));
+//				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.appear_from_right));
+//				viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disappear_to_left));
+
 //				viewFlipper.showNext();
 //				viewFlipper.startFlipping();
 				
-//				viewFlipper.setOnClickListener(cardClickListener);
+				viewFlipper.setOnClickListener(cardClickListener);
 
 				Log.d(TAG, "Add Card to row");
 				// Add Card Button to row
@@ -406,8 +405,8 @@ public class CardGameRun extends Activity {
 			if (getCheckedCardNum() == 2) {
 				int preCheckedCardIndex = -1; // 선택된 카드 index
 
-				for (int i = 0; i < mGameCards.size(); i++) {
-					if (mGameCards.get(i).isChecked()) {
+				for (int i = 0; i < mGameCardList.size(); i++) {
+					if (mGameCardList.get(i).isChecked()) {
 						if (preCheckedCardIndex == -1) {
 							preCheckedCardIndex = i;
 							continue;
@@ -415,14 +414,14 @@ public class CardGameRun extends Activity {
 
 						// -----------------------
 						// 이전 선택 카드 번호와 지금 선택 카드 번호가 같으면 맞음
-						if (mGameCards.get(preCheckedCardIndex).getCardNo() == mGameCards.get(i).getCardNo()) {
+						if (mGameCardList.get(preCheckedCardIndex).getCardNo() == mGameCardList.get(i).getCardNo()) {
 							
-							mGameCards.get(preCheckedCardIndex).setSolved(true);
-							mGameCards.get(i).setSolved(true);
+							mGameCardList.get(preCheckedCardIndex).setSolved(true);
+							mGameCardList.get(i).setSolved(true);
 
 							// 선택 해제
-							mGameCards.get(preCheckedCardIndex).setChecked(false);
-							mGameCards.get(i).setChecked(false);
+							mGameCardList.get(preCheckedCardIndex).setChecked(false);
+							mGameCardList.get(i).setChecked(false);
 
 							// -----------------------
 							// 전부 해결된 경우
@@ -473,102 +472,74 @@ public class CardGameRun extends Activity {
 		}
 
 		public void onAnimationRepeat(Animation arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		public void onAnimationStart(Animation arg0) {
-			// TODO Auto-generated method stub
-			
+			// TODO: lock ?
 		}
 	};
 	
 	// 카드 클릭 처리
 	private OnClickListener cardClickListener = new OnClickListener() {
-
+		
 		public void onClick(View v) {
-			Log.d(TAG, "Get Card Tag");
 			Integer cardNo = (Integer) v.getTag();
-
-			Log.d(TAG, "CardNo:" + cardNo);
-			// Toast.makeText(getApplicationContext(), "CardNo:" + cardNo, Toast.LENGTH_SHORT).show();
-			GameCard gameCard = mGameCards.get(cardNo);
-
+			
+			GameCard gameCard = mGameCardList.get(cardNo);
+			
 			// 풀었는 카드 선택시 아무것도 하지 않음
 			if (gameCard.isSolved()) {
 				return;
 			}
-
+			
 			// X 이미 선택된 카드가 2개 있는 경우 선택된 카드들은 다시 뒤집음
 			if (getCheckedCardNum() == 2) {
 				return;
 				// timer 에 의해 뒤집히기 전까지 다른 작업을 하지 않는다.
 //				flipCheckedCards();
 			}
-
+			
 			// 선택되지 않은 카드 선택시 카드 뒤집음
 			if (gameCard.isChecked() == false) {
 				gameCard.setSide(GameCard.SIDE_FRONT);
 				gameCard.setChecked(true); // 선택처리
 
-//				ViewFlipper viewFlipper = (ViewFlipper)v;
-				ImageView imageView = (ImageView)v;
+				ViewFlipper viewFlipper = (ViewFlipper)v;
 				
-				// 실제 카드 정보
-				Card card = gameCard.getCard();
+				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.appear_from_right));
+				viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disappear_to_left));
 				
-				// 애니메이션 효과 넣기
-				// 애니메이션 설정
-				Animation mAnimFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
-				// 애니메이션 후처리 리스너 붙이기
-				mAnimFade.setAnimationListener(mCardFlipAnimationListener);
+				viewFlipper.getInAnimation().setAnimationListener(mCardFlipAnimationListener);
 				
-//				viewFlipper.getAnimation().setAnimationListener(mCardFlipAnimationListener);
-				
-				imageView.startAnimation(mAnimFade);
-				
-				// 카드 이미지 보여줌
-				imageView.setImageBitmap(card.getThumbnail());
-//				viewFlipper.showNext();
+				viewFlipper.showNext();
 			} else {
 				// 이미 선택된 카드 클릭시 아무것도 하지 않음
 				return;
 			}
 		}
 	};	// end 카드클릭처리
-
+	
 
 	/**
 	 * 선택된 카드들 뒤로 뒤집기
 	 */
 	private void flipCheckedCards() {
 		
-		for (int i = 0; i < mGameCards.size(); i++) {
-			if (mGameCards.get(i).isChecked()) {
-				View view = mGameCards.get(i).getView();
+		for (int i = 0; i < mGameCardList.size(); i++) {
+			if (mGameCardList.get(i).isChecked()) {
+//				View view = mGameCards.get(i).getView();
+				ViewFlipper viewFlipper = (ViewFlipper)mGameCardList.get(i).getView();
 
 				// 선택된 카드 다시 뒤집기
-				mGameCards.get(i).setSide(GameCard.SIDE_BACK);
+				mGameCardList.get(i).setSide(GameCard.SIDE_BACK);
 				
-				// 애니메이션 설정
-				Animation animFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
-				
-				// 뒤로 뒤집기 때문에 후처리는 필요 없음.
-				// 애니메이션 후처리 리스너 붙이기
-//				animFade.setAnimationListener(mCardFlipAnimationListener);
+				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.appear_from_left));
+				viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disappear_to_right));
 
-				view.startAnimation(animFade);
+				viewFlipper.showNext();
 				
-				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.card_back_2);
-				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, mCardWidth, mCardHeight, true);
-				
-				ImageView imageView = (ImageView)view;
-				
-				// 카드 뒷면 표시
-//				imageView.setImageResource(0);
-				imageView.setImageBitmap(resizedBitmap);
-
-				mGameCards.get(i).setChecked(false);
+				mGameCardList.get(i).setChecked(false);
 			}
 		}
 	}
