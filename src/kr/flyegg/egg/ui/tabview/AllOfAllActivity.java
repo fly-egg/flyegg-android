@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ public class AllOfAllActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tabs);
+//		setContentView(R.layout.grid_1);
 		
 		GridView g = (GridView) findViewById(R.id.myGrid);
         g.setAdapter(new AppsAdapter());
@@ -104,6 +107,9 @@ public class AllOfAllActivity extends Activity {
 		super.onStart();
 	}
 
+	private final Bitmap[] maps = {
+	};
+	
     private final Integer[] mImageIds = {
             R.drawable.banana,
             R.drawable.grape,
@@ -197,7 +203,7 @@ public class AllOfAllActivity extends Activity {
         public void setChecked(boolean checked) {
             mChecked = checked;
             setBackgroundDrawable(checked ?
-                    getResources().getDrawable(R.drawable.blue)
+                    getResources().getDrawable(R.drawable.card_frame_inner)
                     : null);
         }
 
