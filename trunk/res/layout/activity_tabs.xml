@@ -74,7 +74,21 @@
 		    android:padding="3dip" />
 
 	</LinearLayout>
+	
+    <GridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/myGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="244dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="auto_fit"
+        android:padding="10dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
 	
+    <!-- 
     <GridView
         android:id="@+id/myGrid"
         android:layout_width="fill_parent"
@@ -86,5 +100,5 @@
         android:padding="10dp"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp" />
-	    
+	     -->
 </LinearLayout>
