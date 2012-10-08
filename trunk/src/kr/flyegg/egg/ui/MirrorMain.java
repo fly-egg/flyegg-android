@@ -1,5 +1,6 @@
 package kr.flyegg.egg.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -28,7 +29,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -40,7 +40,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 public class MirrorMain extends Activity {
@@ -91,8 +90,15 @@ public class MirrorMain extends Activity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        
-
+		// ------------------------------------------
+		// 기존 녹음 된 파일이 있을 경우 삭제
+		// ------------------------------------------
+		String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + mVoicePath;
+		File file = new File(filePath);
+		
+		if (file.exists() == true) {
+			file.delete();
+		}
 		
 		// ------------------------------------------
 		// 카메라 세팅
@@ -289,7 +295,22 @@ public class MirrorMain extends Activity {
 			}
 
 		} else if (v.getId() == R.id.btnVoicePlay) {
+			// ------------------------------------------
 			// 재생 버튼 클릭
+			
+			// 녹음중 재생 버튼 클릭 막음
+			if (recordToggle == true) {
+				return;
+			}
+			
+			// 재생 파일 존재 여부 검사
+			String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + mVoicePath;
+			File file = new File(filePath);
+			if (file.exists() == false) {
+				return;
+			}
+			
+			// 재생
 			MediaPlayer mediaPlayer;
             mediaPlayer = new MediaPlayer();
             try {
