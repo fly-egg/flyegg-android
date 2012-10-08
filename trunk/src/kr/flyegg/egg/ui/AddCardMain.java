@@ -105,12 +105,20 @@ public class AddCardMain extends Activity {
 						insertCategoryAlert();
 					}
 				} else if (v.getId() == R.id.btnAddCardFromGallery) {
+					////////////////////////////////////////////////
 					// 갤러리 띄워서 사진 선택 받기
-					Intent intent = new Intent( Intent.ACTION_PICK ) ;
-					intent.setType( android.provider.MediaStore.Images.Media.CONTENT_TYPE ) ;
-					startActivityForResult( intent, FROM_GALLERY ) ;
+					////////////////////////////////////////////////
+					Intent galleryIntent = new Intent( Intent.ACTION_PICK ) ;
+					
+					// 어플의 이미지 가져오기 하는 경우 허니컴, ICS 에 오류 발생 하여 내부 이미지만 가져오도록 함
+					galleryIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+					
+					galleryIntent.setType( android.provider.MediaStore.Images.Media.CONTENT_TYPE ) ;
+					startActivityForResult( galleryIntent, FROM_GALLERY ) ;
 				} else if (v.getId() == R.id.btnAddCardFromCamera) {
+					////////////////////////////////////////////////
 					// 카메라 띄우기
+					////////////////////////////////////////////////
 					Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 		            startActivityForResult(intent, FROM_CAMERA);
 				} else if (v.getId() == R.id.btnOK) {
@@ -163,6 +171,10 @@ public class AddCardMain extends Activity {
 			}
 		};
 		
+		// 한글키보드를 기본으로 뜨도록... (안됨... 왜?)
+		EditText txtCardName = (EditText)findViewById(R.id.txtCardName);
+		txtCardName.setPrivateImeOptions("defaultInputmode=korea;");
+		
 		// 레벨 클릭 이벤트 연결
 //		findViewById(R.id.btnAddCategory).setOnClickListener(levelClickListener);
 		findViewById(R.id.btnAddCardFromGallery).setOnClickListener(levelClickListener);
@@ -199,6 +211,10 @@ public class AddCardMain extends Activity {
 		}
 	}
 
+	/**
+	 * 저장
+	 * @param category
+	 */
 	private void save(String category) {
 		// save category
 		CategoryAccesser accesser = new CategoryAccesser(getApplicationContext());
@@ -244,13 +260,30 @@ public class AddCardMain extends Activity {
 	 * ActivityResult
 	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// Image from Gallery
 		if (requestCode == FROM_GALLERY) {
+			////////////////////////////////////////////////
+			// Image from Gallery
+			////////////////////////////////////////////////
 			if (resultCode == Activity.RESULT_OK) {
+				Log.d(TAG, "data.getData()=" + data.getData());
 				
                 Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
+//                Cursor cursor = getContentResolver().query(Uri.parse(data.getAction()), null, null, null, null);
+                if (cursor == null) {
+                	Toast.makeText(getApplicationContext(), "cursor null", Toast.LENGTH_SHORT).show();
+                	Log.d(TAG, "cursor is null");
+                	return;
+                }
+                
                 if (cursor.moveToNext()) {
+                	Log.d(TAG, "MediaStore.MediaColumns.DATA=" + MediaStore.MediaColumns.DATA);
                     mImagePath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+                    
+                    if (mImagePath == null) {
+                    	Toast.makeText(getApplicationContext(), "mImagePath is null", Toast.LENGTH_SHORT).show();
+                    	Log.d(TAG, "mImagePath is null");
+                    	return;
+                    }
 
                     Bitmap bitmap = BitmapFactory.decodeFile(mImagePath);
                     
@@ -261,6 +294,9 @@ public class AddCardMain extends Activity {
                 }
 			}
 		} else if (requestCode == FROM_CAMERA) {
+			////////////////////////////////////////////////
+			// Image from Camera
+			////////////////////////////////////////////////
 			if (resultCode == Activity.RESULT_OK) {
 				final Uri uriImages = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 //				final Uri uriImagesthum = MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI;
