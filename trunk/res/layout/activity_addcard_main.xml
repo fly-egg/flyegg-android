@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center_horizontal"
+    android:background="@drawable/background_android"
     android:orientation="vertical" >
 
     <LinearLayout
