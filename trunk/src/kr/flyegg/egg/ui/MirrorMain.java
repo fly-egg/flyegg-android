@@ -22,6 +22,8 @@ import android.hardware.Camera.Size;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +42,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 public class MirrorMain extends Activity {
@@ -256,13 +259,29 @@ public class MirrorMain extends Activity {
 		}
 	}
 
+	
+	// 녹음 30초 제한
+	Handler mRecordHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			Toast.makeText(getApplicationContext(), "30초가 지나서 녹음을 정지 합니다.", Toast.LENGTH_SHORT).show();
+			stopRecord();
+		}
+	};
+	
 	/**
 	 * 버튼 클릭 이벤트
 	 * @param v
 	 */
 	public void onClick(View v) {
 		if (v.getId() == R.id.btnVoiceRecord) {
+			// ------------------------------------------
+			// 녹음 버튼 클릭
+			// ------------------------------------------
+			
 			if (recordToggle == false) {
+				// 30초 후 녹음 정지
+				mRecordHandler.sendEmptyMessageDelayed(0, 30000);
+				
 //				Toast.makeText(getApplicationContext(), "Record Start:" + mVoicePath, Toast.LENGTH_SHORT).show();
 				Log.d(TAG, "Record Start:" + mVoicePath);
 
@@ -279,19 +298,8 @@ public class MirrorMain extends Activity {
 				}
 
 			} else {
-//				Toast.makeText(getApplicationContext(), "Record Stop", Toast.LENGTH_SHORT).show();
-				Log.d(TAG, "Record Stop");
-				try {
-					mAudioRecorder.stop();
-					mAudioRecorder = null;
-
-					Button btn = (Button) findViewById(R.id.btnVoiceRecord);
-					btn.setBackgroundResource(R.drawable.btn_record_start);
-					recordToggle = false;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// 녹음 정지
+				stopRecord();
 			}
 
 		} else if (v.getId() == R.id.btnVoicePlay) {
@@ -347,6 +355,21 @@ public class MirrorMain extends Activity {
 				isFirstImage = !isFirstImage;
 			}
 			MoveNextView();
+		}
+	}
+
+	private void stopRecord() {
+		Log.d(TAG, "Record Stop");
+		try {
+			mAudioRecorder.stop();
+			mAudioRecorder = null;
+
+			Button btn = (Button) findViewById(R.id.btnVoiceRecord);
+			btn.setBackgroundResource(R.drawable.btn_record_start);
+			recordToggle = false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
