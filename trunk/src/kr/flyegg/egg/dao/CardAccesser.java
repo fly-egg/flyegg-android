@@ -3,35 +3,48 @@ package kr.flyegg.egg.dao;
 import java.util.LinkedList;
 import java.util.List;
 
+import kr.flyegg.egg.dao.db.DBColumns;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-
-import kr.flyegg.egg.dao.db.DBColumns;
+import android.net.Uri;
 
 public class CardAccesser {
 	
+	private static final String TAG = "CardAccesser";
+
 	private Context mContext = null;
 
 	public CardAccesser(Context context) {
 		mContext  = context;
 	}
 	
-	public void insert(Card card) {
+	/**
+	 * 등록
+	 * @param card
+	 * @return 생성된 키값
+	 */
+	public String insert(Card card) {
 		ContentValues values = new ContentValues();
     	values.clear();
     	
    		values.put(DBColumns.CARD_WORD, card.getWord());
-		values.put(DBColumns.CARD_IMGPATH, card.getImgPath());
 		values.put(DBColumns.CARD_CATEGORY, card.getCategory());
     	values.put(DBColumns.CARD_TAGS, card.tagToString(card.getTags()));
     	values.put(DBColumns.CARD_CREATEDDATE, System.currentTimeMillis());
     	
     	ContentResolver resolver = mContext.getContentResolver();
-		resolver.insert(DBColumns.CARD_URI, values);
+		Uri uri = resolver.insert(DBColumns.CARD_URI, values);
+		
+		return uri.getLastPathSegment();
 	}
 	
+	/**
+	 * 삭제
+	 * @param imgpath
+	 */
+	/*
 	public void delete(String imgpath) {
 		Cursor cursor= null;
 		
@@ -50,6 +63,7 @@ public class CardAccesser {
 			cursor = null;
 		}
 	}
+	*/
 	
 	public void deleteAll() {
 		ContentResolver resolver = mContext.getContentResolver();
@@ -70,13 +84,13 @@ public class CardAccesser {
 		
 		if(cursor.getCount() > 0 && cursor.moveToFirst()) {
 			while(true) {
-				String imgpath    	= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_IMGPATH));
+				String _id			= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_ID));
 				String word     	= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_WORD));
 				String tags			= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_TAGS));
 				String _category 	= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_CATEGORY));
 				
 //				public Card(String word, String imgPath, String category, String tags) {
-				list.add(new Card(word, imgpath, _category, tags));
+				list.add(new Card(_id, word, _category, tags));
 				//thumbnail 부분 확인하기
 				//list.add(new Card(imgpath, word, tags));
 				
@@ -111,13 +125,13 @@ public class CardAccesser {
 		
 		if(cursor.getCount() > 0 && cursor.moveToFirst()) {
 			while(true) {
-				String imgpath    	= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_IMGPATH));
+				String _id			= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_ID));
 				String word     	= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_WORD));
 				String tags			= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_TAGS));
 				String category 	= cursor.getString(cursor.getColumnIndex(DBColumns.CARD_CATEGORY));
 				
 //				public Card(String word, String imgPath, String category, String tags) {
-				list.add(new Card(word, imgpath, category, tags));
+				list.add(new Card(_id, word, category, tags));
 				//thumbnail 부분 확인하기
 				//list.add(new Card(imgpath, word, tags));
 				

@@ -45,6 +45,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+/**
+ * 말하는 거울
+ * @author junho85
+ */
 public class MirrorMain extends Activity {
 	private static final String TAG = "MirrorMain";
 	
@@ -196,18 +200,29 @@ public class MirrorMain extends Activity {
 		m_viewFlipper.setOnTouchListener(MyTouchListener);
 		m_viewFlipper.removeAllViews();	// 초기화
 		
+		// 카드 리스트 불러오기
+		// TODO: 지정된 카테고리의 카드만 불러오도록 해야 됨
 		CardAccesser cardAccesser = new CardAccesser(getApplicationContext());
         List<Card> list = cardAccesser.getCardList();
         
+//        int i=0;
         for (Card card : list) {
+        	// TODO: 메모리 부족 현상을 대비해서 카드 수 제한이 필요 할 수 있음
+//        	i++;
+//        	if (i>5)
+//        		break;
         	// 이미지
         	ImageView imageView = new ImageView(this);
 
         	imageView.setTag(card);
         	
-			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
-        	imageView.setImageBitmap(bitmap);
+//			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
+//			Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id());
         	imageView.setBackgroundResource(R.drawable.card_front);
+        	
+			Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id() + ".png");
+        	imageView.setImageBitmap(bitmap);
+        	
         	imageView.setPadding(30,30,30,30);
         	
 			RelativeLayout out = new RelativeLayout(getApplicationContext());
@@ -234,7 +249,7 @@ public class MirrorMain extends Activity {
 			out.addView(textView);
 
 			m_viewFlipper.addView(out);
-        }
+        } // for
 	}
 	
 	@Override

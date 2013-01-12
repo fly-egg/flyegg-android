@@ -117,7 +117,7 @@ public class CardBoard extends TabActivity implements TabHost.TabContentFactory 
     	
     	//db에서 list를 가져온다.
     	CategoryAccesser accesser = new CategoryAccesser(getApplicationContext());
-    	List<Category> list = accesser.getCategory();
+    	List<Category> list = accesser.getCategories();
     	
     	for(Category c : list) {
     		

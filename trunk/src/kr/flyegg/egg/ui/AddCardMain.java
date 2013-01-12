@@ -1,5 +1,9 @@
 package kr.flyegg.egg.ui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +12,7 @@ import kr.flyegg.egg.dao.Card;
 import kr.flyegg.egg.dao.CardAccesser;
 import kr.flyegg.egg.dao.Category;
 import kr.flyegg.egg.dao.CategoryAccesser;
+import kr.flyegg.egg.util.CardFileManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -42,6 +47,7 @@ public class AddCardMain extends Activity {
 	private static final int FROM_GALLERY = 1;
 	private static final int FROM_CAMERA = 2;
 
+	private String mImagePath;	// 선택된 이미지 경로
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +86,17 @@ public class AddCardMain extends Activity {
 			}
 		});
 
+		// 카테고리 불러오기
 		List<Category> categories = getCategory();
+		
+		/*
+		// 카테고리가 없으면 종료
+		if (categoryList.size() == 0) {
+			Toast.makeText(getApplicationContext(), "카테고리가 존재하지 않습니다. 카테고리를 먼저 추가 해 주세요.", Toast.LENGTH_SHORT).show();
+			finish();
+		}
+		*/
+
 		for (Category category : categories) {
 			categoryList.add(category.getCategory());
 		}
@@ -91,7 +107,9 @@ public class AddCardMain extends Activity {
 		spinner.setAdapter(adapter);
 
 		spinner.setSelection(0);
-		spinner.setPrompt(categoryList.get(0));
+		if (categoryList.size() > 0) {
+			spinner.setPrompt(categoryList.get(0));
+		}
 
 	    // 레벨 클릭 처리
 		OnClickListener levelClickListener = new OnClickListener() {
@@ -141,22 +159,21 @@ public class AddCardMain extends Activity {
 					Spinner spinner = (Spinner) findViewById(R.id.spinnerCategory);
 					String category = spinner.getPrompt().toString();
 					card.setCategory(category);
-					card.setImgPath(mImagePath);
+//					card.setImgPath(mImagePath);
 					
 					// 테그
 					String[] tags = {};
 					card.setTags(tags);
-					
-					// 썸네일
-					Bitmap bitmap = BitmapFactory.decodeFile(mImagePath);
-					card.setThumbnail(bitmap);
 
 					// 단어
 					card.setWord(cardName);
 					
-                    // 카드추가
+                    // DB에 카드추가
                     CardAccesser cardAccesser = new CardAccesser(getApplicationContext());
-                    cardAccesser.insert(card);
+                    String new_card_id = cardAccesser.insert(card);
+                    
+                    // 썸네일 파일 업로드
+                    CardFileManager.uploadScaledImage(getApplicationContext(), mImagePath, new_card_id);
                     
                     Toast.makeText(getApplicationContext(), "카드를 추가 하였습니다.", Toast.LENGTH_SHORT).show();
                     
@@ -169,6 +186,7 @@ public class AddCardMain extends Activity {
 					return;
 				}
 			}
+
 		};
 		
 		// 한글키보드를 기본으로 뜨도록... (안됨... 왜?)
@@ -185,8 +203,9 @@ public class AddCardMain extends Activity {
 
 	private AlertDialog dialog = null;
 
-	private String mImagePath;
-
+	/**
+	 * 카테고리 추가
+	 */
 	private void insertCategoryAlert() {
 		try {
 			LayoutInflater factory = LayoutInflater.from(this);
@@ -248,14 +267,14 @@ public class AddCardMain extends Activity {
 	private List<Category> getCategory() {
     	// db에서 list를 가져온다.
     	CategoryAccesser accesser = new CategoryAccesser(getApplicationContext());
-    	List<Category> list = accesser.getCategory();
+    	List<Category> list = accesser.getCategories();
     	return list;
 	}
 
     private static final String[] IMAGE_PROJECTION = {
     	MediaStore.Images.ImageColumns.DATA,
     	MediaStore.Images.Thumbnails.DATA };
-    
+
 	/**
 	 * ActivityResult
 	 */
@@ -282,11 +301,14 @@ public class AddCardMain extends Activity {
                     if (mImagePath == null) {
                     	Toast.makeText(getApplicationContext(), "mImagePath is null", Toast.LENGTH_SHORT).show();
                     	Log.d(TAG, "mImagePath is null");
-                    	return;
-                    }
+						return;
+					}
 
-                    Bitmap bitmap = BitmapFactory.decodeFile(mImagePath);
-                    
+					Log.d(TAG, "mImagePath is " + mImagePath);
+
+					Bitmap bitmap = BitmapFactory.decodeFile(mImagePath);
+
+                    // 선택된 이미지를 보여줌
                     ImageView ivAddImage = (ImageView)findViewById(R.id.ivAddImage);
                     ivAddImage.setImageBitmap(bitmap);
                     
@@ -306,16 +328,24 @@ public class AddCardMain extends Activity {
 					mImagePath = cursorImages.getString(0);
 					cursorImages.close();
 
+					if (mImagePath == null) {
+                    	Toast.makeText(getApplicationContext(), "mImagePath is null", Toast.LENGTH_SHORT).show();
+                    	Log.d(TAG, "mImagePath is null");
+                    	return;
+                    }
+
+                    Log.d(TAG, "mImagePath is " + mImagePath);
+
 					Bitmap bitmap = BitmapFactory.decodeFile(mImagePath);
 
+					// 선택된 이미지를 보여줌
 					ImageView ivAddImage = (ImageView) findViewById(R.id.ivAddImage);
 					ivAddImage.setImageBitmap(bitmap);
 
 					Toast.makeText(getApplicationContext(), "imageUrl=" + mImagePath + ";", Toast.LENGTH_SHORT).show();
 				}
-
-			}
-		}
+			} // resultCode == Activity.RESULT_OK
+		} // FROM_CAMERA 
 	} // end nonActivityResult
 	
 	public String getRealPathFromURI(Uri contentUri) {
