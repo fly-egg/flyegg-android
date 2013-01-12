@@ -9,16 +9,22 @@ import kr.flyegg.egg.R;
 import kr.flyegg.egg.cardgame.GameCard;
 import kr.flyegg.egg.dao.Card;
 import kr.flyegg.egg.dao.CardAccesser;
+import kr.flyegg.egg.ui.event.DisplayNextView;
+import kr.flyegg.egg.ui.event.Flip3dAnimation;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -173,10 +179,12 @@ public class CardGameRun extends Activity {
         
         for (Card card : list) {
         	// 축소 이미지 만들기
-			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
-			Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, mCardWidth, mCardHeight, true);
+//			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
+			Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id() + ".png");
+//			Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, mCardWidth, mCardHeight, true);
 
-        	card.setThumbnail(resizedBitmap);
+        	card.setThumbnail(bitmap);
+//        	card.setThumbnail(resizedBitmap);
         	cardsListFromDB.add(card);
         	
         	Log.d(TAG, "word=" + card.getWord());
@@ -227,7 +235,7 @@ public class CardGameRun extends Activity {
 		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
 		tvTitle.setText("짝꿍카드-" + mLevel + "단계");
 		
-		// 
+		// 단계별 단계 이미지 (단계1, 단계2, 단계3)
 		{
 			ImageView imageView = (ImageView) findViewById(R.id.ivTitle);
 			if (mLevel == 1) {
@@ -361,11 +369,38 @@ public class CardGameRun extends Activity {
 //				imageView.setOnClickListener(cardClickListener);
 				
 				
-				// 카드 그림면
+				// 카드 그림면 (앞면)
 				Card card = gameCard.getCard();
 				ImageView imageView2 = new ImageView(getApplicationContext());
-				imageView2.setImageBitmap(card.getThumbnail());
+//				imageView2.setImageBitmap(card.getThumbnail());
+				
+				
+				// 흰색 카드 이미지
+				Bitmap bitmap = Bitmap.createBitmap(mCardWidth, mCardHeight, Bitmap.Config.ARGB_8888);
+				Canvas canvas = new Canvas(bitmap);
+				canvas.drawColor(Color.WHITE);
+				
+				// 뒷면 그리기
+//				Bitmap bitmapBackCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_back_2);
+//				canvas.drawBitmap(bitmapBackCard, 0, 0, new Paint());
+				canvas.drawBitmap(mCardBackSideBitmap, 0, 0, new Paint());
+				
+				Bitmap imgOrg = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id() + ".png");
+				
+				if (imgOrg == null) {
+					Log.d(TAG, "imgOrg is null");
+				} else {
+					Log.d(TAG, "imgOrg width=" + imgOrg.getWidth() + "; height=" + imgOrg.getHeight());
+				}
+
+				Bitmap bitmapInside = Bitmap.createScaledBitmap(imgOrg, mCardWidth-20, mCardHeight-20, true);
+				// 안쪽에 들어갈 이미지 그리기
+				
+				canvas.drawBitmap(bitmapInside, 10, 10, new Paint());
+				
 				imageView2.setPadding(9, 9, 9, 9);
+				
+				imageView2.setImageBitmap(bitmap);
 				
 				viewFlipper.addView(imageView);
 				viewFlipper.addView(imageView2);
@@ -507,6 +542,8 @@ public class CardGameRun extends Activity {
 
 				ViewFlipper viewFlipper = (ViewFlipper)v;
 				
+				//applyRotation(viewFlipper, 0, -90);
+				
 				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.appear_from_right));
 				viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disappear_to_left));
 				
@@ -534,6 +571,8 @@ public class CardGameRun extends Activity {
 				// 선택된 카드 다시 뒤집기
 				mGameCardList.get(i).setSide(GameCard.SIDE_BACK);
 				
+				//applyRotation(viewFlipper, 0, -90);
+				
 				viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.appear_from_left));
 				viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disappear_to_right));
 
@@ -543,6 +582,48 @@ public class CardGameRun extends Activity {
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 * @param viewFlipper
+	 * @param start
+	 * @param end
+	 */
+	private void applyRotation(ViewFlipper viewFlipper, float start, float end) {
+		Integer cardNo = (Integer) viewFlipper.getTag();
+		ImageView view1 = (ImageView)viewFlipper.getChildAt(0);
+		ImageView view2 = (ImageView)viewFlipper.getChildAt(1);
+		
+		GameCard gameCard = mGameCardList.get(cardNo);
+		
+		boolean isFirstImage = true;
+		if (gameCard.getSide() == GameCard.SIDE_FRONT) {
+			isFirstImage = true;
+		} else {
+			isFirstImage = false;
+		}
+
+		// Find the center of image
+		final float centerX = view1.getWidth() / 2.0f;
+		final float centerY = view1.getHeight() / 2.0f;
+
+		// Create a new 3D rotation with the supplied parameter
+		// The animation listener is used to trigger the next animation
+		final Flip3dAnimation rotation = new Flip3dAnimation(start, end, centerX, centerY);
+		rotation.setDuration(500);
+		rotation.setFillAfter(true);
+		rotation.setInterpolator(new AccelerateInterpolator());
+		rotation.setAnimationListener(new DisplayNextView(isFirstImage, view1, view2));
+
+		if (isFirstImage) {
+//			Toast.makeText(getApplicationContext(), "first", Toast.LENGTH_SHORT).show();
+			view1.startAnimation(rotation);
+		} else {
+//			Toast.makeText(getApplicationContext(), "second", Toast.LENGTH_SHORT).show();
+			view2.startAnimation(rotation);
+		}
+	}
+	
 	/**
 	 * ActivityResult
 	 */

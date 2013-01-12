@@ -60,7 +60,9 @@ public class FlyEggProvider extends ContentProvider {
 	}
 
 	
-	
+	/**
+	 * 삽입
+	 */
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -90,6 +92,9 @@ public class FlyEggProvider extends ContentProvider {
 		throw new SQLException("Failed to insert row into " + uri); 
 	}
 
+	/**
+	 * 삭제
+	 */
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		
@@ -112,7 +117,9 @@ public class FlyEggProvider extends ContentProvider {
 	}
 
 	
-	
+	/**
+	 * 수정
+	 */
 	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		
