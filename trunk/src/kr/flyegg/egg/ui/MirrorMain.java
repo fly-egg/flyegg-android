@@ -212,44 +212,44 @@ public class MirrorMain extends Activity {
 //        	if (i>5)
 //        		break;
         	// 이미지
-        	ImageView imageView = new ImageView(this);
+        	ImageView imgCardFront = new ImageView(this);
 
-        	imageView.setTag(card);
+        	imgCardFront.setTag(card);
         	
 //			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
 //			Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id());
-        	imageView.setBackgroundResource(R.drawable.card_front);
+        	imgCardFront.setBackgroundResource(R.drawable.card_front);
         	
 			Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id() + ".png");
-        	imageView.setImageBitmap(bitmap);
+        	imgCardFront.setImageBitmap(bitmap);
         	
-        	imageView.setPadding(30,30,30,30);
+        	imgCardFront.setPadding(30,30,30,30);
         	
 			RelativeLayout out = new RelativeLayout(getApplicationContext());
 			out.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			
 			// 단어
-			TextView textView = new TextView(getApplicationContext());
-			textView.setText(card.getWord());
-			textView.setVisibility(View.GONE);
-			textView.setPadding(30,30,30,30);
+			TextView tvCardBack = new TextView(getApplicationContext());
+			tvCardBack.setText(card.getWord());
+			tvCardBack.setVisibility(View.GONE);
+			tvCardBack.setPadding(30,30,30,30);
 			
 //			textView.setWidth(340);
 //			textView.setHeight(256);
-			textView.setWidth(440);
-			textView.setHeight(356);
-			textView.setTextSize(100.0f);
-			textView.setTextColor(Color.BLACK);
-			textView.setBackgroundResource(R.drawable.card_background);
+			tvCardBack.setWidth(440);
+			tvCardBack.setHeight(356);
+			tvCardBack.setTextSize(100.0f);
+			tvCardBack.setTextColor(Color.BLACK);
+			tvCardBack.setBackgroundResource(R.drawable.card_background);
 			
-			textView.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-			textView.setGravity(Gravity.CENTER);
+			tvCardBack.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			tvCardBack.setGravity(Gravity.CENTER);
 
-			out.addView(imageView);
-			out.addView(textView);
+			out.addView(imgCardFront);
+			out.addView(tvCardBack);
 
 			m_viewFlipper.addView(out);
-        } // for
+        } // for Card list
 	}
 	
 	@Override
