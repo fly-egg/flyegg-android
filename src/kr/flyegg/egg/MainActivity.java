@@ -5,7 +5,7 @@ import kr.flyegg.egg.dao.CategoryAccesser;
 import kr.flyegg.egg.dao.db.FlyEggDBHelper;
 import kr.flyegg.egg.ui.CardBoard;
 import kr.flyegg.egg.ui.CardGameMain;
-import kr.flyegg.egg.ui.CardSlideFilpper;
+import kr.flyegg.egg.ui.SmartCardMain;
 import kr.flyegg.egg.ui.MirrorMain;
 import android.app.Activity;
 import android.content.Intent;
@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
 
 	
     private void callCardFlipActivity() {
-    	Intent i = new Intent(getApplicationContext(), CardSlideFilpper.class);
+    	Intent i = new Intent(getApplicationContext(), SmartCardMain.class);
     	startActivity(i);
     }
     

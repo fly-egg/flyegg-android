@@ -5,6 +5,7 @@ import kr.flyegg.egg.ui.event.DisplayNextView;
 import kr.flyegg.egg.ui.event.Flip3dAnimation;
 import android.os.Bundle;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -20,7 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-public class CardSlideFilpper extends Activity {
+/**
+ * 똑똑카드
+ */
+public class SmartCardMain extends Activity {
 
 	private boolean isFirstImage = true;
 	private ViewFlipper m_viewFlipper;
@@ -60,18 +64,40 @@ public class CardSlideFilpper extends Activity {
 		setUI(mStrIds[3], mImageIds[3]);
 		setUI(mStrIds[4], mImageIds[4]);
 		
-		Button bt1 = (Button) findViewById(R.id.left);
-		bt1.setOnClickListener(new OnClickListener() {
+		// 왼쪽 화살표
+		Button btLeft = (Button) findViewById(R.id.left);
+		btLeft.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
+				if (isFirstImage == false) {
+					// 이미 돌아간 경우 역회전 시킴
+					RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+					ImageView imageView = (ImageView)out.getChildAt(0);
+					TextView textView = (TextView)out.getChildAt(1);
+
+					applyRotation(imageView, textView, 0, -90);
+					isFirstImage = !isFirstImage;
+				}
+
 				MovewPreviousView();
 			}
 		});
 		
-		Button bt2 = (Button) findViewById(R.id.right);
-		bt2.setOnClickListener(new OnClickListener() {
+		// 오른쪽 화살표
+		Button btRight = (Button) findViewById(R.id.right);
+		btRight.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
+				if (isFirstImage == false) {
+					// 이미 돌아간 경우 역회전 시킴
+					RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
+					ImageView imageView = (ImageView)out.getChildAt(0);
+					TextView textView = (TextView)out.getChildAt(1);
+
+					applyRotation(imageView, textView, 0, -90);
+					isFirstImage = !isFirstImage;
+				}
+				
 				MoveNextView();
 			}
 		});
@@ -173,32 +199,34 @@ public class CardSlideFilpper extends Activity {
     private void setUI(String str, int img_id) {
     	RelativeLayout out = new RelativeLayout(getApplicationContext());
 
-    	final ImageView image1 = new ImageView(getApplicationContext());
-		image1.setImageResource(img_id);
+    	final ImageView imgCardFront = new ImageView(getApplicationContext());
+		imgCardFront.setImageResource(img_id);
 		
-		final TextView tv = new TextView(getApplicationContext());
-		tv.setBackgroundResource(R.drawable.card_back);
-		tv.setText(str);
-		tv.setTextSize(140);
-		tv.setTextColor(R.color.card_name_gray);
-		tv.setGravity(Gravity.CENTER);
-		tv.setVisibility(View.GONE);
-	
-		image1.setOnClickListener(new View.OnClickListener() {
-		   public void onClick(View view) {
-		    if (isFirstImage) {       
-		     applyRotation(image1, tv, 0, 90);
-		     isFirstImage = !isFirstImage;
-	
-		    } else {    
-		     applyRotation(image1, tv, 0, -90);
-		     isFirstImage = !isFirstImage;
-		    }
-		   }
+		final TextView tvCardBack = new TextView(getApplicationContext());
+		tvCardBack.setBackgroundResource(R.drawable.card_back);
+		tvCardBack.setText(str);
+		tvCardBack.setTextSize(140);
+		tvCardBack.setTextColor(getResources().getColor(R.color.card_name_gray));
+		tvCardBack.setGravity(Gravity.CENTER);
+		tvCardBack.setVisibility(View.GONE);
+
+		/*
+		imgCardFront.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				if (isFirstImage) {
+					applyRotation(imgCardFront, tvCardBack, 0, 90);
+					isFirstImage = !isFirstImage;
+
+				} else {
+					applyRotation(imgCardFront, tvCardBack, 0, -90);
+					isFirstImage = !isFirstImage;
+				}
+			}
 		});
+		*/
 		
-		out.addView(tv);
-		out.addView(image1);
+		out.addView(imgCardFront);
+		out.addView(tvCardBack);
 		
 		m_viewFlipper.addView(out);
 		m_viewFlipper.setOnTouchListener(MyTouchListener);
