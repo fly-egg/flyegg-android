@@ -211,45 +211,59 @@ public class MirrorMain extends Activity {
 //        	i++;
 //        	if (i>5)
 //        		break;
-        	// 이미지
-        	ImageView imgCardFront = new ImageView(this);
-
-        	imgCardFront.setTag(card);
         	
+        	setCard(card);
+        } // for Card list
+	}
+
+	/**
+	 * viewFlipper 에 카드 추가
+	 * @param card
+	 */
+	private void setCard(Card card) {
+		///////////////////////////////////
+		// 카드앞면 - 이미지
+		ImageView ivCardFront = new ImageView(this);
+
+		ivCardFront.setTag(card);
+		
 //			Bitmap bitmap = BitmapFactory.decodeFile(card.getImgPath());
 //			Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id());
-        	imgCardFront.setBackgroundResource(R.drawable.card_front);
-        	
-			Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id() + ".png");
-        	imgCardFront.setImageBitmap(bitmap);
-        	
-        	imgCardFront.setPadding(30,30,30,30);
-        	
-			RelativeLayout out = new RelativeLayout(getApplicationContext());
-			out.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-			
-			// 단어
-			TextView tvCardBack = new TextView(getApplicationContext());
-			tvCardBack.setText(card.getWord());
-			tvCardBack.setVisibility(View.GONE);
-			tvCardBack.setPadding(30,30,30,30);
-			
+
+		// 카드 배경 그리기
+		ivCardFront.setBackgroundResource(R.drawable.card_front);
+
+		Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id() + ".png");
+		ivCardFront.setImageBitmap(bitmap);
+		
+		ivCardFront.setPadding(30,30,30,30);	// 여백
+		
+		
+		///////////////////////////////////
+		// 카드뒷면 - 단어
+		RelativeLayout layout = new RelativeLayout(getApplicationContext());
+		layout.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+		TextView tvCardBack = new TextView(getApplicationContext());
+		tvCardBack.setText(card.getWord());
+		tvCardBack.setVisibility(View.GONE);
+		tvCardBack.setPadding(30,30,30,30);
+		
 //			textView.setWidth(340);
 //			textView.setHeight(256);
-			tvCardBack.setWidth(440);
-			tvCardBack.setHeight(356);
-			tvCardBack.setTextSize(100.0f);
-			tvCardBack.setTextColor(Color.BLACK);
-			tvCardBack.setBackgroundResource(R.drawable.card_background);
-			
-			tvCardBack.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-			tvCardBack.setGravity(Gravity.CENTER);
+		tvCardBack.setWidth(440);
+		tvCardBack.setHeight(356);
+		tvCardBack.setTextSize(100.0f);
+		tvCardBack.setTextColor(Color.BLACK);
+		tvCardBack.setBackgroundResource(R.drawable.card_background);
+		
+		tvCardBack.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		tvCardBack.setGravity(Gravity.CENTER);
 
-			out.addView(imgCardFront);
-			out.addView(tvCardBack);
+		layout.addView(ivCardFront);
+		layout.addView(tvCardBack);
 
-			m_viewFlipper.addView(out);
-        } // for Card list
+		m_viewFlipper.addView(layout);
 	}
 	
 	@Override

@@ -1,21 +1,27 @@
 package kr.flyegg.egg.ui;
 
+import java.util.List;
+
 import kr.flyegg.egg.R;
+import kr.flyegg.egg.dao.Card;
+import kr.flyegg.egg.dao.CardAccesser;
 import kr.flyegg.egg.ui.event.DisplayNextView;
 import kr.flyegg.egg.ui.event.Flip3dAnimation;
-import android.os.Bundle;
 import android.app.Activity;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,16 +59,28 @@ public class SmartCardMain extends Activity {
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
     	
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_card_slide);
+        setContentView(R.layout.activity_smartcard_main);
         
         
         m_viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-        
-		setUI(mStrIds[0], mImageIds[0]);
-		setUI(mStrIds[1], mImageIds[1]);
-		setUI(mStrIds[2], mImageIds[2]);
-		setUI(mStrIds[3], mImageIds[3]);
-		setUI(mStrIds[4], mImageIds[4]);
+		m_viewFlipper.setOnTouchListener(MyTouchListener);	// 터치 리스너
+		m_viewFlipper.removeAllViews();	// 초기화
+
+		// 임시 카드
+		setCardFromResource(mStrIds[0], mImageIds[0]);
+		setCardFromResource(mStrIds[1], mImageIds[1]);
+		setCardFromResource(mStrIds[2], mImageIds[2]);
+		setCardFromResource(mStrIds[3], mImageIds[3]);
+		setCardFromResource(mStrIds[4], mImageIds[4]);
+		
+		// 카드 리스트 불러오기
+		// TODO: 지정된 카테고리의 카드만 불러오도록 해야 됨
+		CardAccesser cardAccesser = new CardAccesser(getApplicationContext());
+        List<Card> list = cardAccesser.getCardList();
+
+		for (Card card : list) {
+			setCard(card);
+		}
 		
 		// 왼쪽 화살표
 		Button btLeft = (Button) findViewById(R.id.left);
@@ -135,9 +153,9 @@ public class SmartCardMain extends Activity {
 					// 회전 관련 초기화
 					if (isFirstImage == false) {
 						// 이미 돌아간 경우 역회전 시킴
-						RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
-						ImageView imageView = (ImageView)out.getChildAt(0);
-						TextView textView = (TextView)out.getChildAt(1);
+						RelativeLayout layout = (RelativeLayout)m_viewFlipper.getCurrentView();
+						ImageView imageView = (ImageView)layout.getChildAt(0);
+						TextView textView = (TextView)layout.getChildAt(1);
 
 						applyRotation(imageView, textView, 0, -90);
 						isFirstImage = !isFirstImage;
@@ -150,9 +168,9 @@ public class SmartCardMain extends Activity {
 					}
 				} else {
 					// 터치
-					RelativeLayout out = (RelativeLayout)m_viewFlipper.getCurrentView();
-					ImageView imageView = (ImageView)out.getChildAt(0);
-					TextView textView = (TextView)out.getChildAt(1);
+					RelativeLayout layout = (RelativeLayout)m_viewFlipper.getCurrentView();
+					ImageView imageView = (ImageView)layout.getChildAt(0);
+					TextView textView = (TextView)layout.getChildAt(1);
 
 					if (isFirstImage) {
 						applyRotation(imageView, textView, 0, 90);
@@ -171,67 +189,92 @@ public class SmartCardMain extends Activity {
 		}
 	};
     
-//    View.OnTouchListener MyTouchListener = new View.OnTouchListener() {
-//    	public boolean onTouch(View v, MotionEvent event) {
-//    		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//    			m_nPreTouchPosX = (int)event.getX();
-//    		}
-//    		
-//    		if (event.getAction() == MotionEvent.ACTION_UP) {
-//    			int nTouchPosX = (int)event.getX();
-//    			
-//    			if (nTouchPosX < m_nPreTouchPosX) {
-//    				MoveNextView();
-//    			} else if (nTouchPosX > m_nPreTouchPosX) {
-//    				MovewPreviousView();
-//    			}
-//    			
-//    			m_nPreTouchPosX = nTouchPosX;
-//    		}
-//    		
-//            return true;
-//        }
-//    };
     
-    
-    
-    
-    private void setUI(String str, int img_id) {
-    	RelativeLayout out = new RelativeLayout(getApplicationContext());
+    /**
+     * viewFlipper 에 카드 추가
+     * @param cardWord 단어
+     * @param img_id image resource id
+     */
+    private void setCardFromResource(String cardWord, int img_id) {
+    	RelativeLayout layout = new RelativeLayout(getApplicationContext());
 
+		///////////////////////////////////
+    	// 카드앞면 - 이미지
     	final ImageView imgCardFront = new ImageView(getApplicationContext());
-		imgCardFront.setImageResource(img_id);
+		imgCardFront.setBackgroundResource(R.drawable.card_front);	// 앞면 카드를 배경으로 지정
+    	imgCardFront.setPadding(30,30,30,30);	// 여백
+    	imgCardFront.setImageResource(img_id);
 		
+		///////////////////////////////////
+    	// 카드뒷면 - 단어
 		final TextView tvCardBack = new TextView(getApplicationContext());
 		tvCardBack.setBackgroundResource(R.drawable.card_back);
-		tvCardBack.setText(str);
+		tvCardBack.setText(cardWord);
 		tvCardBack.setTextSize(140);
 		tvCardBack.setTextColor(getResources().getColor(R.color.card_name_gray));
 		tvCardBack.setGravity(Gravity.CENTER);
 		tvCardBack.setVisibility(View.GONE);
 
-		/*
-		imgCardFront.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				if (isFirstImage) {
-					applyRotation(imgCardFront, tvCardBack, 0, 90);
-					isFirstImage = !isFirstImage;
-
-				} else {
-					applyRotation(imgCardFront, tvCardBack, 0, -90);
-					isFirstImage = !isFirstImage;
-				}
-			}
-		});
-		*/
+		// 카드 앞/뒷 면 등록
+		layout.addView(imgCardFront);
+		layout.addView(tvCardBack);
 		
-		out.addView(imgCardFront);
-		out.addView(tvCardBack);
-		
-		m_viewFlipper.addView(out);
-		m_viewFlipper.setOnTouchListener(MyTouchListener);
+		m_viewFlipper.addView(layout);
 	}
 
+    /**
+     * viewFlipper 에 카드 추가
+     * @param card
+     */
+    private void setCard(Card card) {
+
+		///////////////////////////////////
+    	// 카드앞면 - 이미지
+//    	final ImageView imgCardFront = new ImageView(getApplicationContext());
+		ImageView ivCardFront = new ImageView(this);
+
+		ivCardFront.setTag(card);
+		
+		ivCardFront.setMinimumWidth(640);
+		ivCardFront.setMinimumHeight(480);
+
+		ivCardFront.setBackgroundResource(R.drawable.card_front);	// 앞면 카드를 배경으로 지정
+//    	FrameLayout.LayoutParams lp = (LayoutParams) imgCardFront.getLayoutParams();
+//    	lp.width = 640;
+//    	lp.height = 480;
+//    	imgCardFront.setLayoutParams(lp);
+//    	
+    	ivCardFront.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//    	imgCardFront.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+    	//android:layout_width="640dip" 
+    	
+		Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/cards/" + card.get_id() + ".png");
+		ivCardFront.setImageBitmap(bitmap);
+		
+    	ivCardFront.setPadding(30,30,30,30);	// 여백
+    	
+		
+		///////////////////////////////////
+    	// 카드뒷면 - 단어
+    	RelativeLayout layout = new RelativeLayout(getApplicationContext());
+		layout.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+    	final TextView tvCardBack = new TextView(getApplicationContext());
+		tvCardBack.setBackgroundResource(R.drawable.card_back);
+		tvCardBack.setText(card.getWord());
+		tvCardBack.setTextSize(140);
+		tvCardBack.setTextColor(getResources().getColor(R.color.card_name_gray));
+		tvCardBack.setGravity(Gravity.CENTER);
+		tvCardBack.setVisibility(View.GONE);
+
+		// 카드 앞/뒷 면 등록
+		layout.addView(ivCardFront);
+		layout.addView(tvCardBack);
+		
+		m_viewFlipper.addView(layout);
+	}
+
+    
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
